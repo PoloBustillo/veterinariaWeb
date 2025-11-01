@@ -130,7 +130,9 @@ export default async function Home() {
                   <ShieldCheckIcon className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">+{consultasExitosas.toLocaleString()}</p>
+                  <p className="font-bold text-gray-900">
+                    +{consultasExitosas.toLocaleString()}
+                  </p>
                   <p className="text-sm text-gray-600">Consultas exitosas</p>
                 </div>
               </div>
@@ -284,11 +286,15 @@ export default async function Home() {
               <p className="text-blue-100 text-lg">Años de experiencia</p>
             </div>
             <div>
-              <p className="text-5xl font-bold text-white mb-2">{consultasExitosas.toLocaleString()}+</p>
+              <p className="text-5xl font-bold text-white mb-2">
+                {consultasExitosas.toLocaleString()}+
+              </p>
               <p className="text-blue-100 text-lg">Consultas exitosas</p>
             </div>
             <div>
-              <p className="text-5xl font-bold text-white mb-2">{veterinarios.length}</p>
+              <p className="text-5xl font-bold text-white mb-2">
+                {veterinarios.length}
+              </p>
               <p className="text-blue-100 text-lg">Veterinarios expertos</p>
             </div>
             <div>
