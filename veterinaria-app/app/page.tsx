@@ -1,12 +1,12 @@
-import Link from 'next/link'
-import { 
-  HeartIcon, 
-  CalendarIcon, 
-  ShieldCheckIcon, 
+import Link from "next/link";
+import {
+  HeartIcon,
+  CalendarIcon,
+  ShieldCheckIcon,
   UserGroupIcon,
   PhoneIcon,
-  ClockIcon 
-} from '@heroicons/react/24/outline'
+  ClockIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Home() {
   return (
@@ -20,17 +20,26 @@ export default function Home() {
               <span className="text-2xl font-bold text-gray-900">VetCare</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#servicios" className="text-gray-700 hover:text-blue-600 transition">
+              <Link
+                href="#servicios"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
                 Servicios
               </Link>
-              <Link href="#nosotros" className="text-gray-700 hover:text-blue-600 transition">
+              <Link
+                href="#nosotros"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
                 Nosotros
               </Link>
-              <Link href="#contacto" className="text-gray-700 hover:text-blue-600 transition">
+              <Link
+                href="#contacto"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
                 Contacto
               </Link>
-              <Link 
-                href="/dashboard" 
+              <Link
+                href="/dashboard"
                 className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
               >
                 Acceder
@@ -48,18 +57,18 @@ export default function Home() {
               El mejor cuidado para tus mascotas
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Brindamos atención veterinaria profesional con tecnología de punta 
+              Brindamos atención veterinaria profesional con tecnología de punta
               y un equipo comprometido con el bienestar de tu compañero.
             </p>
             <div className="flex space-x-4">
-              <Link 
-                href="/dashboard/consultas" 
+              <Link
+                href="/dashboard/consultas"
                 className="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition text-lg font-semibold"
               >
                 Agendar Cita
               </Link>
-              <Link 
-                href="#contacto" 
+              <Link
+                href="#contacto"
                 className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-full hover:bg-blue-50 transition text-lg font-semibold"
               >
                 Contáctanos
@@ -110,9 +119,13 @@ export default function Home() {
                 Consultas Generales
               </h3>
               <p className="text-gray-600 mb-4">
-                Exámenes de rutina, diagnósticos y tratamientos personalizados para el bienestar de tu mascota.
+                Exámenes de rutina, diagnósticos y tratamientos personalizados
+                para el bienestar de tu mascota.
               </p>
-              <Link href="/dashboard/consultas" className="text-blue-600 font-semibold hover:text-blue-700">
+              <Link
+                href="/dashboard/consultas"
+                className="text-blue-600 font-semibold hover:text-blue-700"
+              >
                 Agendar consulta →
               </Link>
             </div>
@@ -126,9 +139,13 @@ export default function Home() {
                 Cirugías
               </h3>
               <p className="text-gray-600 mb-4">
-                Procedimientos quirúrgicos con equipamiento moderno y personal altamente capacitado.
+                Procedimientos quirúrgicos con equipamiento moderno y personal
+                altamente capacitado.
               </p>
-              <Link href="/dashboard" className="text-purple-600 font-semibold hover:text-purple-700">
+              <Link
+                href="/dashboard"
+                className="text-purple-600 font-semibold hover:text-purple-700"
+              >
                 Más información →
               </Link>
             </div>
@@ -142,9 +159,13 @@ export default function Home() {
                 Vacunación
               </h3>
               <p className="text-gray-600 mb-4">
-                Planes de vacunación completos para proteger la salud de tu mascota en todas sus etapas.
+                Planes de vacunación completos para proteger la salud de tu
+                mascota en todas sus etapas.
               </p>
-              <Link href="/dashboard" className="text-green-600 font-semibold hover:text-green-700">
+              <Link
+                href="/dashboard"
+                className="text-green-600 font-semibold hover:text-green-700"
+              >
                 Ver planes →
               </Link>
             </div>
@@ -158,9 +179,13 @@ export default function Home() {
                 Hospitalización
               </h3>
               <p className="text-gray-600 mb-4">
-                Cuidado intensivo las 24 horas con monitoreo constante para casos que requieren atención especial.
+                Cuidado intensivo las 24 horas con monitoreo constante para
+                casos que requieren atención especial.
               </p>
-              <Link href="/dashboard" className="text-orange-600 font-semibold hover:text-orange-700">
+              <Link
+                href="/dashboard"
+                className="text-orange-600 font-semibold hover:text-orange-700"
+              >
                 Conocer más →
               </Link>
             </div>
@@ -174,9 +199,13 @@ export default function Home() {
                 Emergencias 24/7
               </h3>
               <p className="text-gray-600 mb-4">
-                Servicio de urgencias disponible las 24 horas del día, los 7 días de la semana.
+                Servicio de urgencias disponible las 24 horas del día, los 7
+                días de la semana.
               </p>
-              <Link href="#contacto" className="text-pink-600 font-semibold hover:text-pink-700">
+              <Link
+                href="#contacto"
+                className="text-pink-600 font-semibold hover:text-pink-700"
+              >
                 Contactar urgencias →
               </Link>
             </div>
@@ -190,9 +219,13 @@ export default function Home() {
                 Tienda Veterinaria
               </h3>
               <p className="text-gray-600 mb-4">
-                Productos de calidad, alimentos especializados y accesorios para el cuidado de tu mascota.
+                Productos de calidad, alimentos especializados y accesorios para
+                el cuidado de tu mascota.
               </p>
-              <Link href="/dashboard/productos" className="text-indigo-600 font-semibold hover:text-indigo-700">
+              <Link
+                href="/dashboard/productos"
+                className="text-indigo-600 font-semibold hover:text-indigo-700"
+              >
                 Ver productos →
               </Link>
             </div>
@@ -233,30 +266,43 @@ export default function Home() {
                 ¿Por qué elegirnos?
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                Somos una clínica veterinaria con más de 15 años de experiencia, 
-                dedicada al cuidado integral de tus mascotas. Contamos con tecnología 
-                de vanguardia y un equipo de profesionales apasionados.
+                Somos una clínica veterinaria con más de 15 años de experiencia,
+                dedicada al cuidado integral de tus mascotas. Contamos con
+                tecnología de vanguardia y un equipo de profesionales
+                apasionados.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start space-x-3">
                   <ShieldCheckIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Veterinarios certificados</h4>
-                    <p className="text-gray-600">Profesionales con especialización y experiencia comprobada</p>
+                    <h4 className="font-semibold text-gray-900">
+                      Veterinarios certificados
+                    </h4>
+                    <p className="text-gray-600">
+                      Profesionales con especialización y experiencia comprobada
+                    </p>
                   </div>
                 </li>
                 <li className="flex items-start space-x-3">
                   <ShieldCheckIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Equipamiento moderno</h4>
-                    <p className="text-gray-600">Tecnología de punta para diagnósticos precisos</p>
+                    <h4 className="font-semibold text-gray-900">
+                      Equipamiento moderno
+                    </h4>
+                    <p className="text-gray-600">
+                      Tecnología de punta para diagnósticos precisos
+                    </p>
                   </div>
                 </li>
                 <li className="flex items-start space-x-3">
                   <ShieldCheckIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Atención personalizada</h4>
-                    <p className="text-gray-600">Cada mascota recibe un tratamiento único y adaptado</p>
+                    <h4 className="font-semibold text-gray-900">
+                      Atención personalizada
+                    </h4>
+                    <p className="text-gray-600">
+                      Cada mascota recibe un tratamiento único y adaptado
+                    </p>
                   </div>
                 </li>
               </ul>
@@ -277,9 +323,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Contáctanos
             </h2>
-            <p className="text-xl text-gray-600">
-              Estamos aquí para ayudarte
-            </p>
+            <p className="text-xl text-gray-600">Estamos aquí para ayudarte</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -305,7 +349,9 @@ export default function Home() {
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <UserGroupIcon className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Ubicación</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Ubicación
+              </h3>
               <p className="text-gray-600">Av. Principal #123</p>
               <p className="text-gray-600">Ciudad de México</p>
             </div>
@@ -322,8 +368,8 @@ export default function Home() {
           <p className="text-xl text-blue-100 mb-8">
             Agenda tu cita hoy y dale a tu compañero el cuidado que merece
           </p>
-          <Link 
-            href="/dashboard/consultas" 
+          <Link
+            href="/dashboard/consultas"
             className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full hover:bg-gray-100 transition text-lg font-semibold"
           >
             Agendar Cita Ahora
@@ -347,19 +393,51 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-semibold mb-4">Servicios</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white transition">Consultas</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Cirugías</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Vacunación</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Emergencias</Link></li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Consultas
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Cirugías
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Vacunación
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Emergencias
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Enlaces</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white transition">Nosotros</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Blog</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Testimonios</Link></li>
-                <li><Link href="#" className="hover:text-white transition">Contacto</Link></li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Nosotros
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Testimonios
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white transition">
+                    Contacto
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -378,5 +456,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

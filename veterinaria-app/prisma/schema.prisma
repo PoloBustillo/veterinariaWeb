@@ -70,59 +70,59 @@ enum TipoMovimientoGeneral {
 
 // Models
 model Dueno {
-  id_dueno         Int                      @id @default(autoincrement())
-  nombre_completo  String                   @db.VarChar(150)
-  telefono         String?                  @db.VarChar(30)
-  correo           String?                  @db.VarChar(150)
-  direccion        String?                  @db.VarChar(255)
-  fecha_registro   DateTime?                @default(now())
-  activo           Boolean                  @default(true)
-  facturacion      DuenoFacturacion[]
-  relaciones       RelacionDuenoMascota[]
+  id_dueno        Int                    @id @default(autoincrement())
+  nombre_completo String                 @db.VarChar(150)
+  telefono        String?                @db.VarChar(30)
+  correo          String?                @db.VarChar(150)
+  direccion       String?                @db.VarChar(255)
+  fecha_registro  DateTime?              @default(now())
+  activo          Boolean                @default(true)
+  facturacion     DuenoFacturacion[]
+  relaciones      RelacionDuenoMascota[]
 }
 
 model DuenoFacturacion {
-  id_facturacion Int          @id @default(autoincrement())
+  id_facturacion Int         @id @default(autoincrement())
   id_dueno       Int
-  rfc            String       @db.VarChar(13)
-  razon_social   String       @db.VarChar(180)
+  rfc            String      @db.VarChar(13)
+  razon_social   String      @db.VarChar(180)
   tipo_persona   TipoPersona
-  regimen_fiscal String       @db.VarChar(100)
-  uso_cfdi       String       @db.VarChar(50)
-  dueno          Dueno        @relation(fields: [id_dueno], references: [id_dueno])
+  regimen_fiscal String      @db.VarChar(100)
+  uso_cfdi       String      @db.VarChar(50)
+  dueno          Dueno       @relation(fields: [id_dueno], references: [id_dueno])
 }
 
 model Mascota {
-  id_mascota          Int                      @id @default(autoincrement())
-  nombre              String                   @db.VarChar(100)
-  especie             String                   @db.VarChar(50)
-  raza                String?                  @db.VarChar(100)
-  fecha_nacimiento    DateTime?                @db.Date
+  id_mascota          Int                    @id @default(autoincrement())
+  nombre              String                 @db.VarChar(100)
+  especie             String                 @db.VarChar(50)
+  raza                String?                @db.VarChar(100)
+  fecha_nacimiento    DateTime?              @db.Date
   sexo                SexoMascota?
-  color               String?                  @db.VarChar(50)
+  color               String?                @db.VarChar(50)
   senias_particulares String?
   relaciones          RelacionDuenoMascota[]
   consultas           Consulta[]
 }
 
 model RelacionDuenoMascota {
-  id_relacion Int       @id @default(autoincrement())
+  id_relacion Int      @id @default(autoincrement())
   id_dueno    Int
   id_mascota  Int
   rol         RolDueno
-  dueno       Dueno     @relation(fields: [id_dueno], references: [id_dueno])
-  mascota     Mascota   @relation(fields: [id_mascota], references: [id_mascota])
+  dueno       Dueno    @relation(fields: [id_dueno], references: [id_dueno])
+  mascota     Mascota  @relation(fields: [id_mascota], references: [id_mascota])
 }
 
 model Veterinario {
-  id_veterinario Int        @id @default(autoincrement())
-  nombre_completo String    @db.VarChar(150)
-  cedula         String?    @unique @db.VarChar(50)
-  especialidad   String?    @db.VarChar(100)
-  telefono       String?    @db.VarChar(30)
-  correo         String?    @db.VarChar(150)
-  activo         Boolean    @default(true)
-  consultas      Consulta[]
+  id_veterinario  Int        @id @default(autoincrement())
+  nombre_completo String     @db.VarChar(150)
+  cedula          String?    @unique @db.VarChar(50)
+  especialidad    String?    @db.VarChar(100)
+  telefono        String?    @db.VarChar(30)
+  correo          String?    @db.VarChar(150)
+  activo          Boolean    @default(true)
+  consultas       Consulta[]
 }
 
 model Consulta {
@@ -143,12 +143,12 @@ model Consulta {
 }
 
 model Servicio {
-  id_servicio        Int                @id @default(autoincrement())
-  nombre             String             @db.VarChar(150)
-  descripcion        String?
-  costo              Decimal            @db.Decimal(10, 2)
-  duracion_estimada  Int?
-  consultas          ConsultaServicio[]
+  id_servicio       Int                @id @default(autoincrement())
+  nombre            String             @db.VarChar(150)
+  descripcion       String?
+  costo             Decimal            @db.Decimal(10, 2)
+  duracion_estimada Int?
+  consultas         ConsultaServicio[]
 }
 
 model ConsultaServicio {
@@ -162,13 +162,13 @@ model ConsultaServicio {
 }
 
 model Pago {
-  id_pago     Int         @id @default(autoincrement())
+  id_pago     Int             @id @default(autoincrement())
   id_consulta Int?
-  fecha       DateTime?   @default(now())
-  monto       Decimal     @db.Decimal(10, 2)
+  fecha       DateTime?       @default(now())
+  monto       Decimal         @db.Decimal(10, 2)
   metodo      MetodoPago
-  estado      EstadoPago  @default(pendiente)
-  consulta    Consulta?   @relation(fields: [id_consulta], references: [id_consulta])
+  estado      EstadoPago      @default(pendiente)
+  consulta    Consulta?       @relation(fields: [id_consulta], references: [id_consulta])
   ventas      VentaProducto[]
 }
 
@@ -193,13 +193,13 @@ model CajaMovimiento {
 }
 
 model Insumo {
-  id_insumo           Int                  @id @default(autoincrement())
-  nombre              String               @db.VarChar(150)
+  id_insumo           Int                @id @default(autoincrement())
+  nombre              String             @db.VarChar(150)
   descripcion         String?
-  unidad              String?              @db.VarChar(50)
-  cantidad_disponible Int                  @default(0)
-  costo_unitario      Decimal?             @db.Decimal(10, 2)
-  fecha_registro      DateTime?            @default(now())
+  unidad              String?            @db.VarChar(50)
+  cantidad_disponible Int                @default(0)
+  costo_unitario      Decimal?           @db.Decimal(10, 2)
+  fecha_registro      DateTime?          @default(now())
   movimientos         MovimientoInsumo[]
   consultas           ConsultaInsumo[]
 }
@@ -225,14 +225,14 @@ model ConsultaInsumo {
 }
 
 model Producto {
-  id_producto         Int              @id @default(autoincrement())
-  nombre              String           @db.VarChar(150)
+  id_producto         Int             @id @default(autoincrement())
+  nombre              String          @db.VarChar(150)
   descripcion         String?
-  precio              Decimal          @db.Decimal(10, 2)
-  cantidad_disponible Int              @default(0)
-  categoria           String?          @db.VarChar(50)
-  fecha_registro      DateTime?        @default(now())
-  activo              Boolean          @default(true)
+  precio              Decimal         @db.Decimal(10, 2)
+  cantidad_disponible Int             @default(0)
+  categoria           String?         @db.VarChar(50)
+  fecha_registro      DateTime?       @default(now())
+  activo              Boolean         @default(true)
   ventas              VentaProducto[]
 }
 
@@ -248,15 +248,15 @@ model VentaProducto {
 }
 
 model Movimiento {
-  id_movimiento     Int                   @id @default(autoincrement())
-  fecha             DateTime?             @default(now())
-  tipo              TipoMovimientoGeneral
-  concepto          String                @db.VarChar(200)
-  monto             Decimal?              @db.Decimal(10, 2)
-  cantidad          Int?
-  referencia_id     Int?
-  referencia_tabla  String?               @db.VarChar(50)
-  usuario           String?               @db.VarChar(100)
-  observaciones     String?
-  activo            Boolean               @default(true)
+  id_movimiento    Int                   @id @default(autoincrement())
+  fecha            DateTime?             @default(now())
+  tipo             TipoMovimientoGeneral
+  concepto         String                @db.VarChar(200)
+  monto            Decimal?              @db.Decimal(10, 2)
+  cantidad         Int?
+  referencia_id    Int?
+  referencia_tabla String?               @db.VarChar(50)
+  usuario          String?               @db.VarChar(100)
+  observaciones    String?
+  activo           Boolean               @default(true)
 }
