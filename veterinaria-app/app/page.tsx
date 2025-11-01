@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   HeartIcon,
   CalendarIcon,
@@ -7,17 +8,35 @@ import {
   PhoneIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  // Consultar veterinarios activos desde la base de datos
+  const veterinarios = await prisma.veterinario.findMany({
+    where: {
+      activo: true,
+    },
+    orderBy: {
+      nombre_completo: "asc",
+    },
+    take: 50, // Mostrar máximo 8 veterinarios
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Navigation */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center space-x-2">
-              <HeartIcon className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">VetCare</span>
+            <div className="flex items-center space-x-3">
+              <Image 
+                src="/icono-clinica.png" 
+                alt="Clínica Veterinaria Dalton" 
+                width={40} 
+                height={40}
+                className="rounded-lg"
+              />
+              <span className="text-2xl font-bold text-gray-900">Clínica Dalton</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <Link
@@ -25,6 +44,12 @@ export default function Home() {
                 className="text-gray-700 hover:text-blue-600 transition"
               >
                 Servicios
+              </Link>
+              <Link
+                href="#veterinarios"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                Veterinarios
               </Link>
               <Link
                 href="#nosotros"
@@ -54,8 +79,11 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              El mejor cuidado para tus mascotas
+              Clínica Veterinaria Dalton
             </h1>
+            <h2 className="text-3xl font-semibold text-blue-600 mb-6">
+              El mejor cuidado para tus mascotas
+            </h2>
             <p className="text-xl text-gray-600 mb-8">
               Brindamos atención veterinaria profesional con tecnología de punta
               y un equipo comprometido con el bienestar de tu compañero.
@@ -77,9 +105,14 @@ export default function Home() {
           </div>
           <div className="relative">
             <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 shadow-2xl">
-              <div className="bg-white rounded-2xl w-full h-96 flex items-center justify-center">
-                <HeartIcon className="h-32 w-32 text-blue-400" />
-              </div>
+              <Image 
+                src="/imgs/perroyVeterinaria.avif" 
+                alt="Veterinaria atendiendo mascota"
+                width={600}
+                height={400}
+                className="rounded-2xl w-full h-96 object-cover"
+                priority
+              />
             </div>
             {/* Floating Cards */}
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg">
@@ -246,7 +279,7 @@ export default function Home() {
               <p className="text-blue-100 text-lg">Mascotas atendidas</p>
             </div>
             <div>
-              <p className="text-5xl font-bold text-white mb-2">10</p>
+              <p className="text-5xl font-bold text-white mb-2">22</p>
               <p className="text-blue-100 text-lg">Veterinarios expertos</p>
             </div>
             <div>
@@ -263,13 +296,13 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                ¿Por qué elegirnos?
+                ¿Por qué elegir Clínica Dalton?
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                Somos una clínica veterinaria con más de 15 años de experiencia,
+                En Clínica Veterinaria Dalton contamos con más de 15 años de experiencia,
                 dedicada al cuidado integral de tus mascotas. Contamos con
                 tecnología de vanguardia y un equipo de profesionales
-                apasionados.
+                apasionados por el bienestar animal.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start space-x-3">
@@ -279,7 +312,7 @@ export default function Home() {
                       Veterinarios certificados
                     </h4>
                     <p className="text-gray-600">
-                      Profesionales con especialización y experiencia comprobada
+                      22 profesionales con especialización y experiencia comprobada
                     </p>
                   </div>
                 </li>
@@ -308,11 +341,78 @@ export default function Home() {
               </ul>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl shadow-2xl h-96 flex items-center justify-center">
-                <UserGroupIcon className="h-32 w-32 text-blue-600" />
-              </div>
+              <Image 
+                src="/imgs/gatoyVeterinario.avif" 
+                alt="Veterinario de Clínica Dalton con gato"
+                width={600}
+                height={400}
+                className="rounded-2xl shadow-2xl w-full h-96 object-cover"
+              />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Veterinarians Section */}
+      <section id="veterinarios" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Nuestro Equipo Veterinario
+            </h2>
+            <p className="text-xl text-gray-600">
+              Profesionales certificados comprometidos con el bienestar de tu
+              mascota
+            </p>
+          </div>
+
+          {veterinarios.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {veterinarios.map((vet) => (
+                <div
+                  key={vet.id_veterinario}
+                  className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition border border-blue-100"
+                >
+                  <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <UserGroupIcon className="h-10 w-10 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                    {vet.nombre_completo}
+                  </h3>
+                  {vet.especialidad && (
+                    <p className="text-blue-600 text-center font-semibold mb-2">
+                      {vet.especialidad}
+                    </p>
+                  )}
+                  {vet.cedula && (
+                    <p className="text-sm text-gray-500 text-center mb-2">
+                      Cédula: {vet.cedula}
+                    </p>
+                  )}
+                  <div className="mt-4 space-y-2">
+                    {vet.telefono && (
+                      <div className="flex items-center justify-center text-gray-600 text-sm">
+                        <PhoneIcon className="h-4 w-4 mr-2" />
+                        {vet.telefono}
+                      </div>
+                    )}
+                    {vet.correo && (
+                      <p className="text-gray-600 text-sm text-center truncate">
+                        {vet.correo}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <UserGroupIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-xl text-gray-500">
+                No hay veterinarios disponibles en este momento
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -382,9 +482,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <HeartIcon className="h-8 w-8 text-blue-400" />
-                <span className="text-2xl font-bold">VetCare</span>
+              <div className="flex items-center space-x-3 mb-4">
+                <Image 
+                  src="/icono-clinica.png" 
+                  alt="Clínica Dalton" 
+                  width={32} 
+                  height={32}
+                  className="rounded-lg"
+                />
+                <span className="text-2xl font-bold">Clínica Dalton</span>
               </div>
               <p className="text-gray-400">
                 Cuidando a tus mascotas con amor y profesionalismo desde 2009
@@ -444,14 +550,14 @@ export default function Home() {
               <h4 className="text-lg font-semibold mb-4">Contacto</h4>
               <ul className="space-y-2 text-gray-400">
                 <li>+52 (555) 123-4567</li>
-                <li>info@vetcare.com</li>
+                <li>info@clinicadalton.com</li>
                 <li>Av. Principal #123</li>
                 <li>Ciudad de México</li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 VetCare. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Clínica Veterinaria Dalton. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
