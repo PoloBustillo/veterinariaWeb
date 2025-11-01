@@ -29,14 +29,16 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-3">
-              <Image 
-                src="/icono-clinica.png" 
-                alt="Clínica Veterinaria Dalton" 
-                width={40} 
+              <Image
+                src="/icono-clinica.png"
+                alt="Clínica Veterinaria Dalton"
+                width={40}
                 height={40}
                 className="rounded-lg"
               />
-              <span className="text-2xl font-bold text-gray-900">Clínica Dalton</span>
+              <span className="text-2xl font-bold text-gray-900">
+                Clínica Dalton
+              </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <Link
@@ -105,8 +107,8 @@ export default async function Home() {
           </div>
           <div className="relative">
             <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 shadow-2xl">
-              <Image 
-                src="/imgs/perroyVeterinaria.avif" 
+              <Image
+                src="/imgs/perroyVeterinaria.avif"
                 alt="Veterinaria atendiendo mascota"
                 width={600}
                 height={400}
@@ -299,10 +301,10 @@ export default async function Home() {
                 ¿Por qué elegir Clínica Dalton?
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                En Clínica Veterinaria Dalton contamos con más de 15 años de experiencia,
-                dedicada al cuidado integral de tus mascotas. Contamos con
-                tecnología de vanguardia y un equipo de profesionales
-                apasionados por el bienestar animal.
+                En Clínica Veterinaria Dalton contamos con más de 15 años de
+                experiencia, dedicada al cuidado integral de tus mascotas.
+                Contamos con tecnología de vanguardia y un equipo de
+                profesionales apasionados por el bienestar animal.
               </p>
               <ul className="space-y-4">
                 <li className="flex items-start space-x-3">
@@ -312,7 +314,8 @@ export default async function Home() {
                       Veterinarios certificados
                     </h4>
                     <p className="text-gray-600">
-                      22 profesionales con especialización y experiencia comprobada
+                      22 profesionales con especialización y experiencia
+                      comprobada
                     </p>
                   </div>
                 </li>
@@ -341,8 +344,8 @@ export default async function Home() {
               </ul>
             </div>
             <div className="relative">
-              <Image 
-                src="/imgs/gatoyVeterinario.avif" 
+              <Image
+                src="/imgs/gatoyVeterinario.avif"
                 alt="Veterinario de Clínica Dalton con gato"
                 width={600}
                 height={400}
@@ -483,10 +486,10 @@ export default async function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <Image 
-                  src="/icono-clinica.png" 
-                  alt="Clínica Dalton" 
-                  width={32} 
+                <Image
+                  src="/icono-clinica.png"
+                  alt="Clínica Dalton"
+                  width={32}
                   height={32}
                   className="rounded-lg"
                 />
@@ -557,7 +560,10 @@ export default async function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Clínica Veterinaria Dalton. Todos los derechos reservados.</p>
+            <p>
+              &copy; 2025 Clínica Veterinaria Dalton. Todos los derechos
+              reservados.
+            </p>
           </div>
         </div>
       </footer>

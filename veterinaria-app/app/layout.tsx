@@ -14,10 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Clínica Veterinaria Dalton - El mejor cuidado para tus mascotas",
-  description: "Clínica Veterinaria Dalton ofrece atención profesional con 22 veterinarios especializados y más de 15 años de experiencia cuidando mascotas.",
+  description:
+    "Clínica Veterinaria Dalton ofrece atención profesional con 22 veterinarios especializados y más de 15 años de experiencia cuidando mascotas.",
   icons: {
-    icon: '/icono-clinica.png',
-    apple: '/icono-clinica.png',
+    icon: "/icono-clinica.png",
+    apple: "/icono-clinica.png",
   },
 };
 
