@@ -78,21 +78,33 @@ export default async function Home() {
               </Link>
               {session?.user ? (
                 <div className="flex items-center space-x-4">
-                  <Link
-                    href="/mis-citas"
-                    className="text-gray-700 hover:text-blue-600 transition font-medium"
-                  >
-                    Mis Citas
-                  </Link>
-                  <Link
-                    href="/agendar-cita"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition font-medium shadow-md hover:shadow-lg"
-                  >
-                    Agendar Cita
-                  </Link>
+                  {session.user.role === "veterinario" ? (
+                    <Link
+                      href="/veterinario/dashboard"
+                      className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition font-medium shadow-md hover:shadow-lg"
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        href="/mis-citas"
+                        className="text-gray-700 hover:text-blue-600 transition font-medium"
+                      >
+                        Mis Citas
+                      </Link>
+                      <Link
+                        href="/agendar-cita"
+                        className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition font-medium shadow-md hover:shadow-lg"
+                      >
+                        Agendar Cita
+                      </Link>
+                    </>
+                  )}
                   <UserMenu
                     userName={session.user.name || "Usuario"}
                     userEmail={session.user.email || ""}
+                    userRole={session.user.role || "dueno"}
                   />
                 </div>
               ) : (

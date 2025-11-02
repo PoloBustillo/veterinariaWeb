@@ -5,7 +5,9 @@ const prisma = new PrismaClient();
 
 async function agregarPasswordsVeterinarios() {
   try {
-    console.log("🔄 Agregando campo password y migrando contraseñas de veterinarios...");
+    console.log(
+      "🔄 Agregando campo password y migrando contraseñas de veterinarios..."
+    );
 
     // Primero, intentar agregar la columna con SQL crudo
     try {
@@ -48,7 +50,7 @@ async function agregarPasswordsVeterinarios() {
 
         // Usar la cédula como password temporal (sin guiones ni espacios)
         const cedula = vet.cedula?.replace(/[-\s]/g, "") || "VET123456";
-        
+
         // Hashear la cédula
         const hashedPassword = await bcrypt.hash(cedula, 10);
 
@@ -60,7 +62,9 @@ async function agregarPasswordsVeterinarios() {
         `;
 
         console.log(
-          `✅ ${vet.nombre_completo} (${vet.correo || 'sin correo'}) - Password: ${cedula}`
+          `✅ ${vet.nombre_completo} (${
+            vet.correo || "sin correo"
+          }) - Password: ${cedula}`
         );
         migrados++;
       } catch (error) {
@@ -77,12 +81,14 @@ async function agregarPasswordsVeterinarios() {
     console.log(`⏭️  Ya tenían password: ${yaConPassword}`);
     console.log(`❌ Errores: ${errores}`);
     console.log("\n✨ Proceso completado!");
-    
+
     if (migrados > 0) {
       console.log("\n📝 Los veterinarios pueden iniciar sesión con:");
       console.log("   - Correo: su correo electrónico registrado");
       console.log("   - Password: su cédula (sin guiones ni espacios)");
-      console.log("\n💡 Ejemplo: si la cédula es '123-456789-0', el password es '1234567890'");
+      console.log(
+        "\n💡 Ejemplo: si la cédula es '123-456789-0', el password es '1234567890'"
+      );
     }
   } catch (error) {
     console.error("❌ Error fatal en el proceso:", error);

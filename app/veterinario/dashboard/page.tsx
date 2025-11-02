@@ -25,37 +25,41 @@ export default async function DashboardVeterinarioPage() {
   });
 
   // Obtener estadísticas
-  const [totalConsultas, consultasHoy, consultasPendientes, consultasFinalizadas] =
-    await Promise.all([
-      // Total de consultas del veterinario
-      prisma.consulta.count({
-        where: { id_veterinario: idVeterinario },
-      }),
-      // Consultas de hoy
-      prisma.consulta.count({
-        where: {
-          id_veterinario: idVeterinario,
-          fecha: {
-            gte: new Date(new Date().setHours(0, 0, 0, 0)),
-            lt: new Date(new Date().setHours(23, 59, 59, 999)),
-          },
+  const [
+    totalConsultas,
+    consultasHoy,
+    consultasPendientes,
+    consultasFinalizadas,
+  ] = await Promise.all([
+    // Total de consultas del veterinario
+    prisma.consulta.count({
+      where: { id_veterinario: idVeterinario },
+    }),
+    // Consultas de hoy
+    prisma.consulta.count({
+      where: {
+        id_veterinario: idVeterinario,
+        fecha: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          lt: new Date(new Date().setHours(23, 59, 59, 999)),
         },
-      }),
-      // Consultas pendientes
-      prisma.consulta.count({
-        where: {
-          id_veterinario: idVeterinario,
-          estado: "programada",
-        },
-      }),
-      // Consultas finalizadas
-      prisma.consulta.count({
-        where: {
-          id_veterinario: idVeterinario,
-          estado: "finalizada",
-        },
-      }),
-    ]);
+      },
+    }),
+    // Consultas pendientes
+    prisma.consulta.count({
+      where: {
+        id_veterinario: idVeterinario,
+        estado: "programada",
+      },
+    }),
+    // Consultas finalizadas
+    prisma.consulta.count({
+      where: {
+        id_veterinario: idVeterinario,
+        estado: "finalizada",
+      },
+    }),
+  ]);
 
   // Próximas consultas
   const proximasConsultas = await prisma.consulta.findMany({
@@ -223,7 +227,8 @@ export default async function DashboardVeterinarioPage() {
                           </h3>
                           <span className="text-sm text-gray-500">
                             {consulta.mascota.especie}
-                            {consulta.mascota.raza && ` • ${consulta.mascota.raza}`}
+                            {consulta.mascota.raza &&
+                              ` • ${consulta.mascota.raza}`}
                           </span>
                         </div>
                         <p className="text-sm text-gray-600 mt-1">

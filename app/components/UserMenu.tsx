@@ -9,14 +9,17 @@ import {
   ClockIcon,
   ArrowRightOnRectangleIcon,
   ChevronDownIcon,
+  ChartBarIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
 interface UserMenuProps {
   userName: string;
   userEmail: string;
+  userRole: string;
 }
 
-export default function UserMenu({ userName, userEmail }: UserMenuProps) {
+export default function UserMenu({ userName, userEmail, userRole }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +46,13 @@ export default function UserMenu({ userName, userEmail }: UserMenuProps) {
     return name.substring(0, 2).toUpperCase();
   };
 
+  // Determinar el color del avatar según el rol
+  const getAvatarColor = (role: string) => {
+    return role === "veterinario"
+      ? "bg-linear-to-br from-green-600 to-green-700"
+      : "bg-linear-to-br from-blue-600 to-blue-700";
+  };
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -50,14 +60,16 @@ export default function UserMenu({ userName, userEmail }: UserMenuProps) {
         className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition"
       >
         {/* Avatar con iniciales */}
-        <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-semibold shadow-md">
+        <div className={`w-10 h-10 rounded-full ${getAvatarColor(userRole)} flex items-center justify-center text-white font-semibold shadow-md`}>
           {getInitials(userName)}
         </div>
 
         {/* Nombre y flecha */}
         <div className="hidden lg:block text-left">
           <p className="text-sm font-semibold text-gray-900">{userName}</p>
-          <p className="text-xs text-gray-500">{userEmail}</p>
+          <p className="text-xs text-gray-500">
+            {userRole === "veterinario" ? "Veterinario" : userEmail}
+          </p>
         </div>
         <ChevronDownIcon
           className={`w-4 h-4 text-gray-600 transition-transform ${
@@ -73,32 +85,65 @@ export default function UserMenu({ userName, userEmail }: UserMenuProps) {
           <div className="px-4 py-3 border-b border-gray-100">
             <p className="text-sm font-semibold text-gray-900">{userName}</p>
             <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+            {userRole === "veterinario" && (
+              <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded">
+                Veterinario
+              </span>
+            )}
           </div>
 
           {/* Menu Items */}
           <div className="py-2">
-            <Link
-              href="/agendar-cita"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
-            >
-              <CalendarIcon className="w-5 h-5" />
-              <span className="text-sm font-medium">Agendar Cita</span>
-            </Link>
+            {userRole === "veterinario" ? (
+              <>
+                <Link
+                  href="/veterinario/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-green-50 transition text-gray-700 hover:text-green-600"
+                >
+                  <ChartBarIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Dashboard</span>
+                </Link>
 
-            <Link
-              href="/mis-citas"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
-            >
-              <ClockIcon className="w-5 h-5" />
-              <span className="text-sm font-medium">Mis Citas</span>
-            </Link>
+                <Link
+                  href="/veterinario/consultas"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-green-50 transition text-gray-700 hover:text-green-600"
+                >
+                  <ClipboardDocumentListIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Mis Consultas</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/agendar-cita"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
+                >
+                  <CalendarIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Agendar Cita</span>
+                </Link>
+
+                <Link
+                  href="/mis-citas"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
+                >
+                  <ClockIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Mis Citas</span>
+                </Link>
+              </>
+            )}
 
             <Link
               href="#"
               onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
+              className={`flex items-center space-x-3 px-4 py-3 transition text-gray-700 ${
+                userRole === "veterinario"
+                  ? "hover:bg-green-50 hover:text-green-600"
+                  : "hover:bg-blue-50 hover:text-blue-600"
+              }`}
             >
               <UserCircleIcon className="w-5 h-5" />
               <span className="text-sm font-medium">Mi Perfil</span>

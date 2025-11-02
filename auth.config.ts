@@ -5,13 +5,17 @@ export const authConfig = {
     signIn: "/login",
     signOut: "/",
   },
+  session: {
+    strategy: "jwt" as const,
+  },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnAgendarCita = nextUrl.pathname.startsWith("/agendar-cita");
       const isOnMisCitas = nextUrl.pathname.startsWith("/mis-citas");
+      const isOnVeterinario = nextUrl.pathname.startsWith("/veterinario");
 
-      if (isOnAgendarCita || isOnMisCitas) {
+      if (isOnAgendarCita || isOnMisCitas || isOnVeterinario) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       }

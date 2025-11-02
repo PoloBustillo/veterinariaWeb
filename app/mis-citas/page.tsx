@@ -67,6 +67,7 @@ export default async function MisCitasPage() {
       <InternalNav
         userName={session.user?.name || "Usuario"}
         userEmail={session.user?.email || ""}
+        userRole={session.user?.role || "dueno"}
       />
 
       {/* Header */}
