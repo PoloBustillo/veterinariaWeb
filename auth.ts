@@ -126,8 +126,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   callbacks: {
     async jwt({ token, user, trigger }) {
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
+        token.id = user.id || "";
+        token.role = user.role || "dueno";
       }
       return token;
     },
