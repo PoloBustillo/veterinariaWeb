@@ -72,7 +72,8 @@ export async function GET(
     return NextResponse.json({ consulta });
   } catch (error) {
     console.error("Error al obtener consulta:", error);
-    const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
     return NextResponse.json(
       { error: "Error al obtener consulta", details: errorMessage },
       { status: 500 }
@@ -133,19 +134,35 @@ export async function PATCH(
       }
 
       // Veterinario puede: iniciar (en_proceso), finalizar, agregar diagnóstico, tratamiento, observaciones
-      const { estado, diagnostico, tratamiento, observaciones, insumos, servicios } = body;
+      const {
+        estado,
+        diagnostico,
+        tratamiento,
+        observaciones,
+        insumos,
+        servicios,
+      } = body;
 
       // Validar transiciones de estado
       if (estado) {
-        if (consultaActual.estado === "programada" && estado !== "en_proceso" && estado !== "programada") {
+        if (
+          consultaActual.estado === "programada" &&
+          estado !== "en_proceso" &&
+          estado !== "programada"
+        ) {
           return NextResponse.json(
             { error: "Solo puedes iniciar una consulta programada" },
             { status: 400 }
           );
         }
-        if (consultaActual.estado === "finalizada" || consultaActual.estado === "cancelada") {
+        if (
+          consultaActual.estado === "finalizada" ||
+          consultaActual.estado === "cancelada"
+        ) {
           return NextResponse.json(
-            { error: "No puedes modificar una consulta finalizada o cancelada" },
+            {
+              error: "No puedes modificar una consulta finalizada o cancelada",
+            },
             { status: 400 }
           );
         }
@@ -166,7 +183,7 @@ export async function PATCH(
       if (insumos && Array.isArray(insumos)) {
         for (const insumo of insumos) {
           const { id_insumo, cantidad } = insumo;
-          
+
           // Verificar disponibilidad
           const insumoData = await prisma.insumo.findUnique({
             where: { id_insumo },
@@ -174,7 +191,11 @@ export async function PATCH(
 
           if (!insumoData || (insumoData.cantidad_disponible || 0) < cantidad) {
             return NextResponse.json(
-              { error: `Insumo ${insumoData?.nombre || id_insumo} no tiene suficiente cantidad disponible` },
+              {
+                error: `Insumo ${
+                  insumoData?.nombre || id_insumo
+                } no tiene suficiente cantidad disponible`,
+              },
               { status: 400 }
             );
           }
@@ -204,7 +225,7 @@ export async function PATCH(
       if (servicios && Array.isArray(servicios)) {
         for (const servicio of servicios) {
           const { id_servicio, cantidad = 1 } = servicio;
-          
+
           const servicioData = await prisma.servicio.findUnique({
             where: { id_servicio },
           });
@@ -231,11 +252,10 @@ export async function PATCH(
         }
       }
 
-      return NextResponse.json({ 
+      return NextResponse.json({
         consulta,
-        message: "Consulta actualizada exitosamente"
+        message: "Consulta actualizada exitosamente",
       });
-
     } else if (userRole === "dueno") {
       // Cliente solo puede ver consultas de sus mascotas
       const esSuMascota = consultaActual.mascota.Relacion_Dueno_Mascota.some(
@@ -247,7 +267,7 @@ export async function PATCH(
 
       // Cliente solo puede cancelar si está programada
       const { estado } = body;
-      
+
       if (estado !== "cancelada") {
         return NextResponse.json(
           { error: "Los clientes solo pueden cancelar consultas" },
@@ -267,7 +287,7 @@ export async function PATCH(
         const fechaConsulta = new Date(consultaActual.fecha);
         const ahora = new Date();
         const dosHorasEnMs = 2 * 60 * 60 * 1000;
-        
+
         if (fechaConsulta.getTime() - ahora.getTime() < dosHorasEnMs) {
           return NextResponse.json(
             { error: "Debes cancelar con al menos 2 horas de anticipación" },
@@ -284,17 +304,17 @@ export async function PATCH(
         },
       });
 
-      return NextResponse.json({ 
+      return NextResponse.json({
         consulta,
-        message: "Consulta cancelada exitosamente"
+        message: "Consulta cancelada exitosamente",
       });
     }
 
     return NextResponse.json({ error: "Rol no válido" }, { status: 403 });
-
   } catch (error) {
     console.error("Error al actualizar consulta:", error);
-    const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
     return NextResponse.json(
       { error: "Error al actualizar consulta", details: errorMessage },
       { status: 500 }

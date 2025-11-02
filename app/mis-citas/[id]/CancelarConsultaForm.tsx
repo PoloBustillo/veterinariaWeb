@@ -174,17 +174,24 @@ export default function CancelarConsultaForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-bold text-gray-900 mb-2">🐾 Mascota</h3>
-          <p className="text-lg font-semibold text-gray-800">{consulta.mascota.nombre}</p>
+          <p className="text-lg font-semibold text-gray-800">
+            {consulta.mascota.nombre}
+          </p>
           <p className="text-sm text-gray-600">
-            {consulta.mascota.especie} {consulta.mascota.raza && `- ${consulta.mascota.raza}`}
+            {consulta.mascota.especie}{" "}
+            {consulta.mascota.raza && `- ${consulta.mascota.raza}`}
           </p>
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-bold text-gray-900 mb-2">👨‍⚕️ Veterinario</h3>
-          <p className="text-lg font-semibold text-gray-800">{consulta.veterinario.nombre_completo}</p>
+          <p className="text-lg font-semibold text-gray-800">
+            {consulta.veterinario.nombre_completo}
+          </p>
           {consulta.veterinario.especialidad && (
-            <p className="text-sm text-gray-600">{consulta.veterinario.especialidad}</p>
+            <p className="text-sm text-gray-600">
+              {consulta.veterinario.especialidad}
+            </p>
           )}
         </div>
 
@@ -219,15 +226,21 @@ export default function CancelarConsultaForm({
       {/* Motivo */}
       {consulta.motivo && (
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-bold text-gray-900 mb-2">💬 Motivo de la consulta</h3>
+          <h3 className="font-bold text-gray-900 mb-2">
+            💬 Motivo de la consulta
+          </h3>
           <p className="text-gray-700">{consulta.motivo}</p>
         </div>
       )}
 
       {/* Información médica (si ya fue atendida) */}
-      {(consulta.diagnostico || consulta.tratamiento || consulta.observaciones) && (
+      {(consulta.diagnostico ||
+        consulta.tratamiento ||
+        consulta.observaciones) && (
         <div className="space-y-4 border-t pt-6">
-          <h2 className="text-2xl font-bold text-gray-900">📋 Información Médica</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            📋 Información Médica
+          </h2>
 
           {consulta.diagnostico && (
             <div className="bg-gray-50 p-4 rounded-lg">
@@ -252,7 +265,9 @@ export default function CancelarConsultaForm({
 
           {consulta.Consulta_Insumo.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-bold text-gray-900 mb-2">💉 Insumos Utilizados</h3>
+              <h3 className="font-bold text-gray-900 mb-2">
+                💉 Insumos Utilizados
+              </h3>
               <ul className="space-y-1">
                 {consulta.Consulta_Insumo.map((ci) => (
                   <li key={ci.id_consulta_insumo} className="text-gray-700">
@@ -265,7 +280,9 @@ export default function CancelarConsultaForm({
 
           {consulta.Consulta_Servicio.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-bold text-gray-900 mb-2">🏥 Servicios Aplicados</h3>
+              <h3 className="font-bold text-gray-900 mb-2">
+                🏥 Servicios Aplicados
+              </h3>
               <ul className="space-y-1">
                 {consulta.Consulta_Servicio.map((cs) => (
                   <li key={cs.id_consulta_servicio} className="text-gray-700">
@@ -291,7 +308,9 @@ export default function CancelarConsultaForm({
             </button>
           ) : (
             <div className="bg-yellow-50 border-2 border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg">
-              <p className="font-semibold">⚠️ No puedes cancelar esta consulta</p>
+              <p className="font-semibold">
+                ⚠️ No puedes cancelar esta consulta
+              </p>
               <p className="text-sm mt-1">
                 Debes cancelar con al menos 2 horas de anticipación.
               </p>

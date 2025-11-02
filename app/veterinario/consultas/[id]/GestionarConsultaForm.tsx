@@ -230,8 +230,8 @@ export default function GestionarConsultaForm({
           diagnostico: formData.diagnostico,
           tratamiento: formData.tratamiento,
           observaciones: formData.observaciones,
-          insumos: insumosSeleccionados.filter(i => i.cantidad > 0),
-          servicios: serviciosSeleccionados.filter(s => s.cantidad > 0),
+          insumos: insumosSeleccionados.filter((i) => i.cantidad > 0),
+          servicios: serviciosSeleccionados.filter((s) => s.cantidad > 0),
         }),
       });
 
@@ -261,7 +261,10 @@ export default function GestionarConsultaForm({
 
   const agregarInsumo = (id_insumo: number) => {
     if (!insumosSeleccionados.find((i) => i.id_insumo === id_insumo)) {
-      setInsumosSeleccionados([...insumosSeleccionados, { id_insumo, cantidad: 1 }]);
+      setInsumosSeleccionados([
+        ...insumosSeleccionados,
+        { id_insumo, cantidad: 1 },
+      ]);
     }
   };
 
@@ -274,16 +277,24 @@ export default function GestionarConsultaForm({
   };
 
   const eliminarInsumo = (id_insumo: number) => {
-    setInsumosSeleccionados(insumosSeleccionados.filter((i) => i.id_insumo !== id_insumo));
+    setInsumosSeleccionados(
+      insumosSeleccionados.filter((i) => i.id_insumo !== id_insumo)
+    );
   };
 
   const agregarServicio = (id_servicio: number) => {
     if (!serviciosSeleccionados.find((s) => s.id_servicio === id_servicio)) {
-      setServiciosSeleccionados([...serviciosSeleccionados, { id_servicio, cantidad: 1 }]);
+      setServiciosSeleccionados([
+        ...serviciosSeleccionados,
+        { id_servicio, cantidad: 1 },
+      ]);
     }
   };
 
-  const actualizarCantidadServicio = (id_servicio: number, cantidad: number) => {
+  const actualizarCantidadServicio = (
+    id_servicio: number,
+    cantidad: number
+  ) => {
     setServiciosSeleccionados(
       serviciosSeleccionados.map((s) =>
         s.id_servicio === id_servicio ? { ...s, cantidad } : s
@@ -332,14 +343,18 @@ export default function GestionarConsultaForm({
     return (
       <div className="text-center py-12">
         <p className="text-red-600">Datos de consulta incompletos</p>
-        <p className="text-sm text-gray-600 mt-2">Por favor, contacta al administrador</p>
+        <p className="text-sm text-gray-600 mt-2">
+          Por favor, contacta al administrador
+        </p>
       </div>
     );
   }
 
   const dueno = consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
-  const puedeEditar = consulta.estado === "programada" || consulta.estado === "en_proceso";
-  const esConsultaFinalizada = consulta.estado === "finalizada" || consulta.estado === "cancelada";
+  const puedeEditar =
+    consulta.estado === "programada" || consulta.estado === "en_proceso";
+  const esConsultaFinalizada =
+    consulta.estado === "finalizada" || consulta.estado === "cancelada";
 
   return (
     <div className="space-y-6">
@@ -359,15 +374,20 @@ export default function GestionarConsultaForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-bold text-gray-900 mb-2">🐾 Mascota</h3>
-          <p className="text-lg font-semibold text-gray-800">{consulta.mascota.nombre}</p>
+          <p className="text-lg font-semibold text-gray-800">
+            {consulta.mascota.nombre}
+          </p>
           <p className="text-sm text-gray-600">
-            {consulta.mascota.especie} {consulta.mascota.raza && `- ${consulta.mascota.raza}`}
+            {consulta.mascota.especie}{" "}
+            {consulta.mascota.raza && `- ${consulta.mascota.raza}`}
           </p>
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-bold text-gray-900 mb-2">👤 Dueño</h3>
-          <p className="text-lg font-semibold text-gray-800">{dueno?.nombre_completo}</p>
+          <p className="text-lg font-semibold text-gray-800">
+            {dueno?.nombre_completo}
+          </p>
           {dueno?.telefono && (
             <p className="text-sm text-gray-600">📞 {dueno.telefono}</p>
           )}
@@ -407,7 +427,9 @@ export default function GestionarConsultaForm({
       {/* Motivo */}
       {consulta.motivo && (
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-bold text-gray-900 mb-2">💬 Motivo de la consulta</h3>
+          <h3 className="font-bold text-gray-900 mb-2">
+            💬 Motivo de la consulta
+          </h3>
           <p className="text-gray-700">{consulta.motivo}</p>
         </div>
       )}
@@ -430,17 +452,24 @@ export default function GestionarConsultaForm({
       {/* Formulario de consulta (solo si está en proceso o programada) */}
       {userRole === "veterinario" && puedeEditar && (
         <div className="space-y-6 border-t pt-6">
-          <h2 className="text-2xl font-bold text-gray-900">📝 Información Médica</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            📝 Información Médica
+          </h2>
 
           {/* Diagnóstico */}
           <div>
-            <label htmlFor="diagnostico" className="block text-sm font-bold text-gray-900 mb-2">
+            <label
+              htmlFor="diagnostico"
+              className="block text-sm font-bold text-gray-900 mb-2"
+            >
               🩺 Diagnóstico {consulta.estado === "en_proceso" && "*"}
             </label>
             <textarea
               id="diagnostico"
               value={formData.diagnostico}
-              onChange={(e) => setFormData({ ...formData, diagnostico: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, diagnostico: e.target.value })
+              }
               rows={4}
               className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 placeholder-gray-500"
               placeholder="Describe el diagnóstico de la mascota..."
@@ -449,13 +478,18 @@ export default function GestionarConsultaForm({
 
           {/* Tratamiento */}
           <div>
-            <label htmlFor="tratamiento" className="block text-sm font-bold text-gray-900 mb-2">
+            <label
+              htmlFor="tratamiento"
+              className="block text-sm font-bold text-gray-900 mb-2"
+            >
               💊 Tratamiento {consulta.estado === "en_proceso" && "*"}
             </label>
             <textarea
               id="tratamiento"
               value={formData.tratamiento}
-              onChange={(e) => setFormData({ ...formData, tratamiento: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, tratamiento: e.target.value })
+              }
               rows={4}
               className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 placeholder-gray-500"
               placeholder="Indica el tratamiento a seguir..."
@@ -464,13 +498,18 @@ export default function GestionarConsultaForm({
 
           {/* Observaciones */}
           <div>
-            <label htmlFor="observaciones" className="block text-sm font-bold text-gray-900 mb-2">
+            <label
+              htmlFor="observaciones"
+              className="block text-sm font-bold text-gray-900 mb-2"
+            >
               📋 Observaciones
             </label>
             <textarea
               id="observaciones"
               value={formData.observaciones}
-              onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, observaciones: e.target.value })
+              }
               rows={3}
               className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 placeholder-gray-500"
               placeholder="Observaciones adicionales..."
@@ -479,17 +518,27 @@ export default function GestionarConsultaForm({
 
           {/* Insumos */}
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-4">💉 Insumos Utilizados</h3>
-            
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              💉 Insumos Utilizados
+            </h3>
+
             {/* Insumos ya agregados */}
             {consulta.Consulta_Insumo.length > 0 && (
               <div className="mb-4 bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm font-semibold text-gray-700 mb-2">Insumos registrados:</p>
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Insumos registrados:
+                </p>
                 <ul className="space-y-1">
                   {consulta.Consulta_Insumo.map((ci) => (
-                    <li key={ci.id_consulta_insumo} className="text-sm text-gray-600">
+                    <li
+                      key={ci.id_consulta_insumo}
+                      className="text-sm text-gray-600"
+                    >
                       • {ci.Insumo.nombre} - Cantidad: {ci.cantidad}
-                      {ci.Insumo.costo_unitario && ` - $${(Number(ci.Insumo.costo_unitario) * ci.cantidad).toFixed(2)}`}
+                      {ci.Insumo.costo_unitario &&
+                        ` - $${(
+                          Number(ci.Insumo.costo_unitario) * ci.cantidad
+                        ).toFixed(2)}`}
                     </li>
                   ))}
                 </ul>
@@ -510,11 +559,17 @@ export default function GestionarConsultaForm({
               >
                 <option value="">➕ Agregar insumo...</option>
                 {insumos
-                  .filter((i) => !insumosSeleccionados.find((is) => is.id_insumo === i.id_insumo))
+                  .filter(
+                    (i) =>
+                      !insumosSeleccionados.find(
+                        (is) => is.id_insumo === i.id_insumo
+                      )
+                  )
                   .map((insumo) => (
                     <option key={insumo.id_insumo} value={insumo.id_insumo}>
                       {insumo.nombre} - Disponible: {insumo.cantidad_disponible}
-                      {insumo.costo_unitario && ` - $${Number(insumo.costo_unitario).toFixed(2)}`}
+                      {insumo.costo_unitario &&
+                        ` - $${Number(insumo.costo_unitario).toFixed(2)}`}
                     </option>
                   ))}
               </select>
@@ -522,20 +577,27 @@ export default function GestionarConsultaForm({
               {insumosSeleccionados.length > 0 && (
                 <div className="space-y-2">
                   {insumosSeleccionados.map((insumoSel) => {
-                    const insumo = insumos.find((i) => i.id_insumo === insumoSel.id_insumo);
+                    const insumo = insumos.find(
+                      (i) => i.id_insumo === insumoSel.id_insumo
+                    );
                     return (
                       <div
                         key={insumoSel.id_insumo}
                         className="flex items-center gap-3 bg-green-50 p-3 rounded-lg"
                       >
-                        <span className="flex-1 font-medium text-gray-800">{insumo?.nombre}</span>
+                        <span className="flex-1 font-medium text-gray-800">
+                          {insumo?.nombre}
+                        </span>
                         <input
                           type="number"
                           min="1"
                           max={insumo?.cantidad_disponible || 1}
                           value={insumoSel.cantidad}
                           onChange={(e) =>
-                            actualizarCantidadInsumo(insumoSel.id_insumo, parseInt(e.target.value))
+                            actualizarCantidadInsumo(
+                              insumoSel.id_insumo,
+                              parseInt(e.target.value)
+                            )
                           }
                           className="w-20 px-2 py-1 border-2 border-gray-400 rounded bg-white text-gray-900"
                         />
@@ -555,16 +617,24 @@ export default function GestionarConsultaForm({
 
           {/* Servicios */}
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-4">🏥 Servicios Aplicados</h3>
-            
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              🏥 Servicios Aplicados
+            </h3>
+
             {/* Servicios ya agregados */}
             {consulta.Consulta_Servicio.length > 0 && (
               <div className="mb-4 bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm font-semibold text-gray-700 mb-2">Servicios registrados:</p>
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Servicios registrados:
+                </p>
                 <ul className="space-y-1">
                   {consulta.Consulta_Servicio.map((cs) => (
-                    <li key={cs.id_consulta_servicio} className="text-sm text-gray-600">
-                      • {cs.Servicio.nombre} - Cantidad: {cs.cantidad} - Subtotal: ${Number(cs.subtotal).toFixed(2)}
+                    <li
+                      key={cs.id_consulta_servicio}
+                      className="text-sm text-gray-600"
+                    >
+                      • {cs.Servicio.nombre} - Cantidad: {cs.cantidad} -
+                      Subtotal: ${Number(cs.subtotal).toFixed(2)}
                     </li>
                   ))}
                 </ul>
@@ -585,9 +655,17 @@ export default function GestionarConsultaForm({
               >
                 <option value="">➕ Agregar servicio...</option>
                 {servicios
-                  .filter((s) => !serviciosSeleccionados.find((ss) => ss.id_servicio === s.id_servicio))
+                  .filter(
+                    (s) =>
+                      !serviciosSeleccionados.find(
+                        (ss) => ss.id_servicio === s.id_servicio
+                      )
+                  )
                   .map((servicio) => (
-                    <option key={servicio.id_servicio} value={servicio.id_servicio}>
+                    <option
+                      key={servicio.id_servicio}
+                      value={servicio.id_servicio}
+                    >
                       {servicio.nombre} - ${Number(servicio.costo).toFixed(2)}
                     </option>
                   ))}
@@ -596,27 +674,40 @@ export default function GestionarConsultaForm({
               {serviciosSeleccionados.length > 0 && (
                 <div className="space-y-2">
                   {serviciosSeleccionados.map((servicioSel) => {
-                    const servicio = servicios.find((s) => s.id_servicio === servicioSel.id_servicio);
+                    const servicio = servicios.find(
+                      (s) => s.id_servicio === servicioSel.id_servicio
+                    );
                     return (
                       <div
                         key={servicioSel.id_servicio}
                         className="flex items-center gap-3 bg-green-50 p-3 rounded-lg"
                       >
-                        <span className="flex-1 font-medium text-gray-800">{servicio?.nombre}</span>
+                        <span className="flex-1 font-medium text-gray-800">
+                          {servicio?.nombre}
+                        </span>
                         <span className="text-sm text-gray-600">
-                          ${servicio && (Number(servicio.costo) * servicioSel.cantidad).toFixed(2)}
+                          $
+                          {servicio &&
+                            (
+                              Number(servicio.costo) * servicioSel.cantidad
+                            ).toFixed(2)}
                         </span>
                         <input
                           type="number"
                           min="1"
                           value={servicioSel.cantidad}
                           onChange={(e) =>
-                            actualizarCantidadServicio(servicioSel.id_servicio, parseInt(e.target.value))
+                            actualizarCantidadServicio(
+                              servicioSel.id_servicio,
+                              parseInt(e.target.value)
+                            )
                           }
                           className="w-20 px-2 py-1 border-2 border-gray-400 rounded bg-white text-gray-900"
                         />
                         <button
-                          onClick={() => eliminarServicio(servicioSel.id_servicio)}
+                          onClick={() =>
+                            eliminarServicio(servicioSel.id_servicio)
+                          }
                           className="text-red-600 hover:text-red-700 font-bold"
                         >
                           ✕
@@ -655,7 +746,9 @@ export default function GestionarConsultaForm({
       {/* Vista de consulta finalizada o cancelada */}
       {esConsultaFinalizada && (
         <div className="space-y-4 border-t pt-6">
-          <h2 className="text-2xl font-bold text-gray-900">📋 Información de la Consulta</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            📋 Información de la Consulta
+          </h2>
 
           {consulta.diagnostico && (
             <div className="bg-gray-50 p-4 rounded-lg">
@@ -680,7 +773,9 @@ export default function GestionarConsultaForm({
 
           {consulta.Consulta_Insumo.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-bold text-gray-900 mb-2">💉 Insumos Utilizados</h3>
+              <h3 className="font-bold text-gray-900 mb-2">
+                💉 Insumos Utilizados
+              </h3>
               <ul className="space-y-1">
                 {consulta.Consulta_Insumo.map((ci) => (
                   <li key={ci.id_consulta_insumo} className="text-gray-700">
@@ -693,7 +788,9 @@ export default function GestionarConsultaForm({
 
           {consulta.Consulta_Servicio.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-bold text-gray-900 mb-2">🏥 Servicios Aplicados</h3>
+              <h3 className="font-bold text-gray-900 mb-2">
+                🏥 Servicios Aplicados
+              </h3>
               <ul className="space-y-1">
                 {consulta.Consulta_Servicio.map((cs) => (
                   <li key={cs.id_consulta_servicio} className="text-gray-700">
