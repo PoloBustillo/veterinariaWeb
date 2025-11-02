@@ -77,7 +77,11 @@ export default function InternalNav({
               </>
             )}
 
-            <UserMenu userName={userName} userEmail={userEmail} userRole={userRole} />
+            <UserMenu
+              userName={userName}
+              userEmail={userEmail}
+              userRole={userRole}
+            />
           </div>
         </div>
       </div>

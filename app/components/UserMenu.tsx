@@ -19,7 +19,11 @@ interface UserMenuProps {
   userRole: string;
 }
 
-export default function UserMenu({ userName, userEmail, userRole }: UserMenuProps) {
+export default function UserMenu({
+  userName,
+  userEmail,
+  userRole,
+}: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +64,11 @@ export default function UserMenu({ userName, userEmail, userRole }: UserMenuProp
         className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition"
       >
         {/* Avatar con iniciales */}
-        <div className={`w-10 h-10 rounded-full ${getAvatarColor(userRole)} flex items-center justify-center text-white font-semibold shadow-md`}>
+        <div
+          className={`w-10 h-10 rounded-full ${getAvatarColor(
+            userRole
+          )} flex items-center justify-center text-white font-semibold shadow-md`}
+        >
           {getInitials(userName)}
         </div>
 

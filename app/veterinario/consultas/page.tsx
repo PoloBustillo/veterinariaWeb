@@ -86,7 +86,8 @@ export default async function ConsultasVeterinarioPage() {
                           </h3>
                           <span className="text-sm text-gray-500">
                             {consulta.mascota.especie}
-                            {consulta.mascota.raza && ` • ${consulta.mascota.raza}`}
+                            {consulta.mascota.raza &&
+                              ` • ${consulta.mascota.raza}`}
                           </span>
                         </div>
 
