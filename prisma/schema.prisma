@@ -39,7 +39,8 @@ model Veterinario {
   cedula          String?    @unique @db.VarChar(50)
   especialidad    String?    @db.VarChar(100)
   telefono        String?    @db.VarChar(30)
-  correo          String?    @db.VarChar(150)
+  correo          String?    @unique @db.VarChar(150)
+  password        String?    @db.VarChar(255)
   activo          Boolean?   @default(true)
   consultas       Consulta[]
 }

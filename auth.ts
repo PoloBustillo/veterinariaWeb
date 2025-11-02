@@ -7,10 +7,33 @@ import { z } from "zod";
 
 async function getUser(email: string) {
   try {
-    const user = await prisma.dueno.findFirst({
+    // Buscar primero en dueños
+    const dueno = await prisma.dueno.findFirst({
       where: { correo: email },
     });
-    return user;
+
+    if (dueno) {
+      return {
+        ...dueno,
+        role: "dueno" as const,
+        userId: dueno.id_dueno,
+      };
+    }
+
+    // Si no es dueño, buscar en veterinarios
+    const veterinario = await prisma.veterinario.findFirst({
+      where: { correo: email },
+    });
+
+    if (veterinario) {
+      return {
+        ...veterinario,
+        role: "veterinario" as const,
+        userId: veterinario.id_veterinario,
+      };
+    }
+
+    return null;
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
@@ -31,29 +54,64 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const user = await getUser(email);
           if (!user) return null;
 
-          // Verificar password hasheado con bcrypt
-          if (user.password) {
-            const passwordMatch = await bcrypt.compare(password, user.password);
+          // Verificar password según el tipo de usuario
+          if (user.role === "dueno") {
+            // Para dueños
+            if (user.password) {
+              const passwordMatch = await bcrypt.compare(
+                password,
+                user.password
+              );
 
-            if (passwordMatch) {
-              return {
-                id: user.id_dueno.toString(),
-                email: user.correo || "",
-                name: user.nombre_completo,
-              };
+              if (passwordMatch) {
+                return {
+                  id: user.userId.toString(),
+                  email: user.correo || "",
+                  name: user.nombre_completo,
+                  role: "dueno",
+                };
+              }
+            } else {
+              // Fallback para dueños sin password (últimos 4 dígitos del teléfono)
+              const passwordMatch =
+                user.telefono?.slice(-4) === password || password === "123456";
+
+              if (passwordMatch) {
+                return {
+                  id: user.userId.toString(),
+                  email: user.correo || "",
+                  name: user.nombre_completo,
+                  role: "dueno",
+                };
+              }
             }
-          } else {
-            // Fallback temporal para usuarios sin password hasheado
-            // (últimos 4 dígitos del teléfono o "123456")
-            const passwordMatch =
-              user.telefono?.slice(-4) === password || password === "123456";
+          } else if (user.role === "veterinario") {
+            // Para veterinarios
+            if (user.password) {
+              const passwordMatch = await bcrypt.compare(
+                password,
+                user.password
+              );
 
-            if (passwordMatch) {
-              return {
-                id: user.id_dueno.toString(),
-                email: user.correo || "",
-                name: user.nombre_completo,
-              };
+              if (passwordMatch) {
+                return {
+                  id: user.userId.toString(),
+                  email: user.correo || "",
+                  name: user.nombre_completo,
+                  role: "veterinario",
+                };
+              }
+            } else {
+              // Fallback: cédula sin guiones ni espacios como password
+              const cedula = user.cedula?.replace(/[-\s]/g, "");
+              if (cedula && cedula === password) {
+                return {
+                  id: user.userId.toString(),
+                  email: user.correo || "",
+                  name: user.nombre_completo,
+                  role: "veterinario",
+                };
+              }
             }
           }
         }
@@ -66,12 +124,14 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
