@@ -109,13 +109,30 @@ export default async function AgendarCitaPage() {
                   No tienes mascotas registradas
                 </h3>
                 <p className="text-yellow-800 mt-1">
-                  Para agendar una cita, primero debes tener al menos una
-                  mascota registrada en tu cuenta. Por favor contacta a la
-                  clínica para registrar a tu mascota.
+                  Para agendar una cita, primero debes registrar al menos una
+                  mascota en tu cuenta.
                 </p>
-                <p className="text-sm text-yellow-700 mt-3">
-                  📞 Teléfono: (555) 123-4567 • ✉️ Email: info@dalton.vet
-                </p>
+                <div className="mt-4">
+                  <Link
+                    href="/registrar-mascota"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Registrar mi Mascota
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

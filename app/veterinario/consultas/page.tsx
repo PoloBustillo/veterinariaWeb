@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import InternalNav from "@/app/components/InternalNav";
 
 export default async function ConsultasVeterinarioPage() {
   const session = await auth();
@@ -58,8 +59,14 @@ export default async function ConsultasVeterinarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <InternalNav 
+        userName={session.user.name || "Veterinario"}
+        userEmail={session.user.email || ""}
+        userRole={session.user.role || "veterinario"}
+      />
+      <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             Mis Consultas
@@ -153,5 +160,6 @@ export default async function ConsultasVeterinarioPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

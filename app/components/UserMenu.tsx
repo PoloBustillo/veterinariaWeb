@@ -11,6 +11,8 @@ import {
   ChevronDownIcon,
   ChartBarIcon,
   ClipboardDocumentListIcon,
+  PlusCircleIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 
 interface UserMenuProps {
@@ -121,6 +123,24 @@ export default function UserMenu({
                   <ClipboardDocumentListIcon className="w-5 h-5" />
                   <span className="text-sm font-medium">Mis Consultas</span>
                 </Link>
+
+                <Link
+                  href="/mis-mascotas"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-green-50 transition text-gray-700 hover:text-green-600"
+                >
+                  <HeartIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Mascotas</span>
+                </Link>
+
+                <Link
+                  href="/registrar-mascota"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-green-50 transition text-gray-700 hover:text-green-600"
+                >
+                  <PlusCircleIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Registrar Mascota</span>
+                </Link>
               </>
             ) : (
               <>
@@ -140,6 +160,24 @@ export default function UserMenu({
                 >
                   <ClockIcon className="w-5 h-5" />
                   <span className="text-sm font-medium">Mis Citas</span>
+                </Link>
+
+                <Link
+                  href="/mis-mascotas"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
+                >
+                  <HeartIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Mis Mascotas</span>
+                </Link>
+
+                <Link
+                  href="/registrar-mascota"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 px-4 py-3 hover:bg-blue-50 transition text-gray-700 hover:text-blue-600"
+                >
+                  <PlusCircleIcon className="w-5 h-5" />
+                  <span className="text-sm font-medium">Registrar Mascota</span>
                 </Link>
               </>
             )}

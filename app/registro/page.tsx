@@ -297,13 +297,10 @@ export default function RegistroPage() {
                 📋 Al registrarte:
               </p>
               <ul className="text-xs text-blue-800 space-y-1">
-                <li>✅ Podrás agendar citas para tus mascotas</li>
-                <li>✅ Verás el historial completo de consultas</li>
-                <li>✅ Recibirás recordatorios de citas</li>
-                <li>
-                  ✅ Después del registro, contacta a la clínica para registrar
-                  a tus mascotas
-                </li>
+                <li>✅ Podrás registrar a tus mascotas</li>
+                <li>✅ Agendar citas veterinarias</li>
+                <li>✅ Ver el historial completo de consultas</li>
+                <li>✅ Recibir recordatorios de citas</li>
               </ul>
             </div>
           </div>

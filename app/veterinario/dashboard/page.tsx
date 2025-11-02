@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import InternalNav from "@/app/components/InternalNav";
 import {
   CalendarIcon,
   ClockIcon,
@@ -100,9 +101,15 @@ export default async function DashboardVeterinarioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+    <>
+      <InternalNav 
+        userName={session.user.name || "Veterinario"}
+        userEmail={session.user.email || ""}
+        userRole={session.user.role || "veterinario"}
+      />
+      <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
@@ -258,5 +265,6 @@ export default async function DashboardVeterinarioPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
