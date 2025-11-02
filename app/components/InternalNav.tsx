@@ -13,7 +13,10 @@ export default function InternalNav({ userName, userEmail }: InternalNavProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition">
+          <Link
+            href="/"
+            className="flex items-center space-x-3 hover:opacity-80 transition"
+          >
             <Image
               src="/icono-clinica.png"
               alt="Clínica Veterinaria Dalton"

@@ -90,7 +90,7 @@ export default async function Home() {
                   >
                     Agendar Cita
                   </Link>
-                  <UserMenu 
+                  <UserMenu
                     userName={session.user.name || "Usuario"}
                     userEmail={session.user.email || ""}
                   />

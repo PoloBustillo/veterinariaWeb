@@ -64,7 +64,7 @@ export default async function MisCitasPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
       {/* Navigation */}
-      <InternalNav 
+      <InternalNav
         userName={session.user?.name || "Usuario"}
         userEmail={session.user?.email || ""}
       />
