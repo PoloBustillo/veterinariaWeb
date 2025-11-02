@@ -187,7 +187,7 @@ export default function RegistrarMascotaForm({
                 required
                 value={formData.id_dueno}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-green-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-900 font-medium"
               >
                 <option value="">🔍 Selecciona un cliente</option>
                 {clientes.map((cliente) => (
@@ -220,7 +220,7 @@ export default function RegistrarMascotaForm({
           required
           value={formData.nombre}
           onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
+          className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 font-medium transition"
           placeholder="Ej: Max, Luna, Bobby"
         />
       </div>
@@ -239,7 +239,7 @@ export default function RegistrarMascotaForm({
           required
           value={formData.especie}
           onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium"
+          className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium"
         >
           <option value="">Selecciona una especie</option>
           <option value="Perro">Perro</option>
@@ -266,7 +266,7 @@ export default function RegistrarMascotaForm({
           name="raza"
           value={formData.raza}
           onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
+          className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 font-medium transition"
           placeholder="Ej: Labrador, Siamés, Mestizo"
         />
       </div>
@@ -286,7 +286,7 @@ export default function RegistrarMascotaForm({
             name="fecha_nacimiento"
             value={formData.fecha_nacimiento}
             onChange={handleChange}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
+            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
           />
         </div>
 
@@ -303,7 +303,7 @@ export default function RegistrarMascotaForm({
             name="sexo"
             value={formData.sexo}
             onChange={handleChange}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
+            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
           >
             <option value="">Selecciona el sexo</option>
             <option value="Macho">♂ Macho</option>
@@ -326,7 +326,7 @@ export default function RegistrarMascotaForm({
           name="color"
           value={formData.color}
           onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition"
+          className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 font-medium transition"
           placeholder="Ej: Negro, Blanco, Atigrado"
         />
       </div>
@@ -345,7 +345,7 @@ export default function RegistrarMascotaForm({
           rows={3}
           value={formData.senias_particulares}
           onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium transition resize-none"
+          className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 font-medium transition resize-none"
           placeholder="Ej: Mancha blanca en el pecho, cicatriz en la pata izquierda"
         />
       </div>

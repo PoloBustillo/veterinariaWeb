@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import InternalNav from "@/app/components/InternalNav";
 
 export default async function ConsultasVeterinarioPage() {
@@ -82,15 +83,16 @@ export default async function ConsultasVeterinarioPage() {
                   const dueno =
                     consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
                   return (
-                    <div
+                    <Link
                       key={consulta.id_consulta}
-                      className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition"
+                      href={`/veterinario/consultas/${consulta.id_consulta}`}
+                      className="block border border-gray-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition cursor-pointer"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="font-semibold text-gray-900">
-                              {consulta.mascota.nombre}
+                              🐾 {consulta.mascota.nombre}
                             </h3>
                             <span className="text-sm text-gray-500">
                               {consulta.mascota.especie}
@@ -100,51 +102,35 @@ export default async function ConsultasVeterinarioPage() {
                           </div>
 
                           <p className="text-sm text-gray-600">
-                            <span className="font-medium">Dueño:</span>{" "}
+                            <span className="font-medium">👤 Dueño:</span>{" "}
                             {dueno?.nombre_completo || "No especificado"}
                           </p>
 
                           {dueno?.telefono && (
                             <p className="text-sm text-gray-600">
-                              <span className="font-medium">Teléfono:</span>{" "}
+                              <span className="font-medium">📞 Teléfono:</span>{" "}
                               {dueno.telefono}
                             </p>
                           )}
 
                           {consulta.motivo && (
                             <p className="text-sm text-gray-700 mt-2">
-                              <span className="font-medium">Motivo:</span>{" "}
+                              <span className="font-medium">💬 Motivo:</span>{" "}
                               {consulta.motivo}
                             </p>
                           )}
 
                           {consulta.diagnostico && (
-                            <p className="text-sm text-gray-700 mt-2">
-                              <span className="font-medium">Diagnóstico:</span>{" "}
+                            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+                              <span className="font-medium">🩺 Diagnóstico:</span>{" "}
                               {consulta.diagnostico}
-                            </p>
-                          )}
-
-                          {consulta.tratamiento && (
-                            <p className="text-sm text-gray-700 mt-2">
-                              <span className="font-medium">Tratamiento:</span>{" "}
-                              {consulta.tratamiento}
-                            </p>
-                          )}
-
-                          {consulta.observaciones && (
-                            <p className="text-sm text-gray-700 mt-2">
-                              <span className="font-medium">
-                                Observaciones:
-                              </span>{" "}
-                              {consulta.observaciones}
                             </p>
                           )}
                         </div>
 
-                        <div className="text-right">
-                          <p className="text-sm font-medium text-blue-600 mb-2">
-                            {formatFecha(consulta.fecha)}
+                        <div className="text-right ml-4">
+                          <p className="text-sm font-medium text-green-600 mb-2">
+                            📅 {formatFecha(consulta.fecha)}
                           </p>
                           <span
                             className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${getEstadoBadge(
@@ -153,9 +139,12 @@ export default async function ConsultasVeterinarioPage() {
                           >
                             {consulta.estado || "Sin estado"}
                           </span>
+                          <p className="text-xs text-gray-500 mt-2">
+                            👆 Click para gestionar
+                          </p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

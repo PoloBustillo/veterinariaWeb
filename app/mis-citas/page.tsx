@@ -123,15 +123,16 @@ export default async function MisCitasPage() {
         ) : (
           <div className="grid gap-6">
             {consultas.map((consulta) => (
-              <div
+              <Link
                 key={consulta.id_consulta}
-                className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition"
+                href={`/mis-citas/${consulta.id_consulta}`}
+                className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl hover:border-blue-300 transition cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-gray-900">
-                        {consulta.mascota.nombre}
+                        🐾 {consulta.mascota.nombre}
                       </h3>
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${getEstadoBadge(
@@ -149,6 +150,9 @@ export default async function MisCitasPage() {
                   <div className="text-right">
                     <p className="text-sm text-gray-500">
                       ID: #{consulta.id_consulta}
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      👆 Click para ver detalles
                     </p>
                   </div>
                 </div>
@@ -206,7 +210,7 @@ export default async function MisCitasPage() {
                     </p>
                   </div>
                 )}
-              </div>
+              </Link>
             ))}
           </div>
         )}

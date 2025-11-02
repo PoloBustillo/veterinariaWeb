@@ -174,7 +174,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
           value={formData.id_mascota}
           onChange={handleChange}
           required
-          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
+          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
         >
           <option value="" className="text-gray-500">
             -- Selecciona tu mascota --
@@ -205,7 +205,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
           value={formData.id_veterinario}
           onChange={handleChange}
           required
-          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
+          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
         >
           <option value="" className="text-gray-500">
             -- Selecciona un veterinario --
@@ -240,7 +240,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
             onChange={handleChange}
             min={today}
             required
-            className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
+            className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
           />
         </div>
 
@@ -257,7 +257,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
             value={formData.hora}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
+            className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-medium"
           >
             <option value="" className="text-gray-500">
               -- Selecciona un horario --
@@ -290,7 +290,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
           required
           rows={3}
           placeholder="Ejemplo: Vacunación, revisión general, síntomas..."
-          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base placeholder-gray-400"
+          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base placeholder-gray-500"
         />
       </div>
 
@@ -309,7 +309,7 @@ export default function AgendarCitaForm({ veterinarios, mascotas }: Props) {
           value={formData.observaciones}
           onChange={handleChange}
           placeholder="Información extra relevante..."
-          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base placeholder-gray-400"
+          className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base placeholder-gray-500"
         />
       </div>
 
