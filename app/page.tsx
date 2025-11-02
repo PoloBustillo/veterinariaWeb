@@ -9,8 +9,12 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
+import UserMenu from "./components/UserMenu";
 
 export default async function Home() {
+  const session = await auth();
+
   // Consultar veterinarios activos desde la base de datos
   const veterinarios = await prisma.veterinario.findMany({
     where: {
@@ -72,12 +76,33 @@ export default async function Home() {
               >
                 Contacto
               </Link>
-              <Link
-                href="/dashboard"
-                className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
-              >
-                Acceder
-              </Link>
+              {session?.user ? (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    href="/mis-citas"
+                    className="text-gray-700 hover:text-blue-600 transition font-medium"
+                  >
+                    Mis Citas
+                  </Link>
+                  <Link
+                    href="/agendar-cita"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition font-medium shadow-md hover:shadow-lg"
+                  >
+                    Agendar Cita
+                  </Link>
+                  <UserMenu 
+                    userName={session.user.name || "Usuario"}
+                    userEmail={session.user.email || ""}
+                  />
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
+                >
+                  Iniciar Sesión
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -99,7 +124,7 @@ export default async function Home() {
             </p>
             <div className="flex space-x-4">
               <Link
-                href="/dashboard/consultas"
+                href="/agendar-cita"
                 className="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition text-lg font-semibold"
               >
                 Agendar Cita
