@@ -7,10 +7,7 @@ export async function POST(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "No autenticado" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -81,11 +78,12 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error al registrar mascota:", error);
-    const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
     return NextResponse.json(
-      { 
+      {
         error: "Error al registrar la mascota",
-        details: errorMessage 
+        details: errorMessage,
       },
       { status: 500 }
     );
@@ -98,10 +96,7 @@ export async function GET(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "No autenticado" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);

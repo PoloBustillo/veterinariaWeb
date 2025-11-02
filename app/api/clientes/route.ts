@@ -7,18 +7,12 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "No autenticado" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
     // Solo veterinarios pueden ver la lista de clientes
     if (session.user.role !== "veterinario") {
-      return NextResponse.json(
-        { error: "No autorizado" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
     const clientes = await prisma.dueno.findMany({

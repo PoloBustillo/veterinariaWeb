@@ -14,7 +14,9 @@ interface RegistrarMascotaFormProps {
   userRole: string;
 }
 
-export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormProps) {
+export default function RegistrarMascotaForm({
+  userRole,
+}: RegistrarMascotaFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -88,7 +90,9 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
         setTimeout(() => {
           successMessage.remove();
-          router.push(userRole === "veterinario" ? "/mis-mascotas" : "/mis-mascotas");
+          router.push(
+            userRole === "veterinario" ? "/mis-mascotas" : "/mis-mascotas"
+          );
           router.refresh();
         }, 2000);
       } else {
@@ -100,14 +104,18 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
       }
     } catch (err) {
       console.error("Error de red:", err);
-      setError("Error al conectar con el servidor. Por favor intenta de nuevo.");
+      setError(
+        "Error al conectar con el servidor. Por favor intenta de nuevo."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setFormData({
       ...formData,
@@ -142,14 +150,32 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
       {/* Selector de Cliente (solo para veterinarios) */}
       {userRole === "veterinario" && (
         <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-          <label htmlFor="id_dueno" className="block text-sm font-bold text-green-900 mb-2">
+          <label
+            htmlFor="id_dueno"
+            className="block text-sm font-bold text-green-900 mb-2"
+          >
             👤 Cliente (Dueño) *
           </label>
           {loadingClientes ? (
             <div className="flex items-center gap-2 text-green-700">
-              <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               <span>Cargando clientes...</span>
             </div>
@@ -181,7 +207,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
       {/* Nombre */}
       <div>
-        <label htmlFor="nombre" className="block text-sm font-bold text-gray-900 mb-2">
+        <label
+          htmlFor="nombre"
+          className="block text-sm font-bold text-gray-900 mb-2"
+        >
           🐾 Nombre de la Mascota *
         </label>
         <input
@@ -198,7 +227,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
       {/* Especie */}
       <div>
-        <label htmlFor="especie" className="block text-sm font-bold text-gray-900 mb-2">
+        <label
+          htmlFor="especie"
+          className="block text-sm font-bold text-gray-900 mb-2"
+        >
           🦴 Especie *
         </label>
         <select
@@ -222,7 +254,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
       {/* Raza */}
       <div>
-        <label htmlFor="raza" className="block text-sm font-bold text-gray-900 mb-2">
+        <label
+          htmlFor="raza"
+          className="block text-sm font-bold text-gray-900 mb-2"
+        >
           🏷️ Raza (opcional)
         </label>
         <input
@@ -239,7 +274,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Fecha de Nacimiento */}
         <div>
-          <label htmlFor="fecha_nacimiento" className="block text-sm font-bold text-gray-900 mb-2">
+          <label
+            htmlFor="fecha_nacimiento"
+            className="block text-sm font-bold text-gray-900 mb-2"
+          >
             🎂 Fecha de Nacimiento
           </label>
           <input
@@ -254,7 +292,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
         {/* Sexo */}
         <div>
-          <label htmlFor="sexo" className="block text-sm font-bold text-gray-900 mb-2">
+          <label
+            htmlFor="sexo"
+            className="block text-sm font-bold text-gray-900 mb-2"
+          >
             ⚥ Sexo
           </label>
           <select
@@ -273,7 +314,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
       {/* Color */}
       <div>
-        <label htmlFor="color" className="block text-sm font-bold text-gray-900 mb-2">
+        <label
+          htmlFor="color"
+          className="block text-sm font-bold text-gray-900 mb-2"
+        >
           🎨 Color
         </label>
         <input
@@ -289,7 +333,10 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
 
       {/* Señas Particulares */}
       <div>
-        <label htmlFor="senias_particulares" className="block text-sm font-bold text-gray-900 mb-2">
+        <label
+          htmlFor="senias_particulares"
+          className="block text-sm font-bold text-gray-900 mb-2"
+        >
           📝 Señas Particulares
         </label>
         <textarea
@@ -310,8 +357,18 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
           onClick={() => router.back()}
           className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
           Cancelar
         </button>
@@ -326,16 +383,41 @@ export default function RegistrarMascotaForm({ userRole }: RegistrarMascotaFormP
         >
           {loading ? (
             <>
-              <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Registrando...
             </>
           ) : (
             <>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               Registrar Mascota
             </>
