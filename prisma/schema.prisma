@@ -7,43 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Dueno {
-  id_dueno               Int                      @id @default(autoincrement())
-  nombre_completo        String                   @db.VarChar(150)
-  telefono               String?                  @db.VarChar(30)
-  correo                 String?                  @unique @db.VarChar(150)
-  password               String?                  @db.VarChar(255)
-  direccion              String?                  @db.VarChar(255)
-  fecha_registro         DateTime?                @db.Timestamp(6)
-  activo                 Boolean?                 @default(true)
-  Dueno_Facturacion      Dueno_Facturacion[]
-  Relacion_Dueno_Mascota Relacion_Dueno_Mascota[]
+model Caja {
+  id_caja         Int               @id @default(autoincrement())
+  fecha_apertura  DateTime?         @db.Timestamp(6)
+  fecha_cierre    DateTime?         @db.Timestamp(6)
+  saldo_inicial   Decimal           @db.Decimal(10, 2)
+  saldo_final     Decimal?          @db.Decimal(10, 2)
+  observaciones   String?
+  Caja_Movimiento Caja_Movimiento[]
+  Pago            Pago[]
 }
 
-model Mascota {
-  id_mascota             Int                      @id @default(autoincrement())
-  nombre                 String                   @db.VarChar(100)
-  especie                String                   @db.VarChar(50)
-  raza                   String?                  @db.VarChar(100)
-  fecha_nacimiento       DateTime?                @db.Date
-  sexo                   SexoMascota?
-  color                  String?                  @db.VarChar(50)
-  senias_particulares    String?
-  consultas              Consulta[]
-  Relacion_Dueno_Mascota Relacion_Dueno_Mascota[]
-}
-
-model Veterinario {
-  id_veterinario  Int        @id @default(autoincrement())
-  nombre_completo String     @db.VarChar(150)
-  cedula          String?    @unique @db.VarChar(50)
-  especialidad    String?    @db.VarChar(100)
-  telefono        String?    @db.VarChar(30)
-  correo          String?    @unique @db.VarChar(150)
-  password        String?    @db.VarChar(255)
-  rol             String?    @default("veterinario") @db.VarChar(50)
-  activo          Boolean?   @default(true)
-  consultas       Consulta[]
+model Caja_Movimiento {
+  id_movimiento Int            @id @default(autoincrement())
+  id_caja       Int
+  fecha         DateTime?      @db.Timestamp(6)
+  concepto      String         @db.VarChar(150)
+  monto         Decimal        @db.Decimal(10, 2)
+  tipo          TipoMovimiento
+  Caja          Caja           @relation(fields: [id_caja], references: [id_caja], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Consulta {
@@ -56,89 +38,11 @@ model Consulta {
   tratamiento       String?
   estado            EstadoConsulta?     @default(programada)
   observaciones     String?
-  mascota           Mascota             @relation(fields: [id_mascota], references: [id_mascota], onDelete: NoAction, onUpdate: NoAction)
-  veterinario       Veterinario         @relation(fields: [id_veterinario], references: [id_veterinario], onDelete: NoAction, onUpdate: NoAction)
+  Mascota           Mascota             @relation(fields: [id_mascota], references: [id_mascota], onDelete: NoAction, onUpdate: NoAction)
+  Veterinario       Veterinario         @relation(fields: [id_veterinario], references: [id_veterinario], onDelete: NoAction, onUpdate: NoAction)
   Consulta_Insumo   Consulta_Insumo[]
   Consulta_Servicio Consulta_Servicio[]
-  pagos             Pago[]
-}
-
-model Servicio {
-  id_servicio       Int                 @id @default(autoincrement())
-  nombre            String              @db.VarChar(150)
-  descripcion       String?
-  costo             Decimal             @db.Decimal(10, 2)
-  duracion_estimada Int?
-  Consulta_Servicio Consulta_Servicio[]
-}
-
-model Pago {
-  id_pago        Int              @id @default(autoincrement())
-  id_consulta    Int?
-  fecha          DateTime?        @db.Timestamp(6)
-  monto          Decimal          @db.Decimal(10, 2)
-  metodo         MetodoPago
-  estado         EstadoPago?      @default(pendiente)
-  consulta       Consulta?        @relation(fields: [id_consulta], references: [id_consulta], onDelete: NoAction, onUpdate: NoAction)
-  Venta_Producto Venta_Producto[]
-}
-
-model Caja {
-  id_caja         Int               @id @default(autoincrement())
-  fecha_apertura  DateTime?         @db.Timestamp(6)
-  fecha_cierre    DateTime?         @db.Timestamp(6)
-  saldo_inicial   Decimal           @db.Decimal(10, 2)
-  saldo_final     Decimal?          @db.Decimal(10, 2)
-  observaciones   String?
-  Caja_Movimiento Caja_Movimiento[]
-}
-
-model Insumo {
-  id_insumo           Int                 @id @default(autoincrement())
-  nombre              String              @db.VarChar(150)
-  descripcion         String?
-  unidad              String?             @db.VarChar(50)
-  cantidad_disponible Int?                @default(0)
-  costo_unitario      Decimal?            @db.Decimal(10, 2)
-  fecha_registro      DateTime?           @db.Timestamp(6)
-  Consulta_Insumo     Consulta_Insumo[]
-  Movimiento_Insumo   Movimiento_Insumo[]
-}
-
-model Producto {
-  id_producto         Int              @id @default(autoincrement())
-  nombre              String           @db.VarChar(150)
-  descripcion         String?
-  precio              Decimal          @db.Decimal(10, 2)
-  cantidad_disponible Int?             @default(0)
-  categoria           String?          @db.VarChar(50)
-  fecha_registro      DateTime?        @db.Timestamp(6)
-  activo              Boolean?         @default(true)
-  Venta_Producto      Venta_Producto[]
-}
-
-model Movimiento {
-  id_movimiento    Int                   @id @default(autoincrement())
-  fecha            DateTime?             @db.Timestamp(6)
-  tipo             TipoMovimientoGeneral
-  concepto         String                @db.VarChar(200)
-  monto            Decimal?              @db.Decimal(10, 2)
-  cantidad         Int?
-  referencia_id    Int?
-  referencia_tabla String?               @db.VarChar(50)
-  usuario          String?               @db.VarChar(100)
-  observaciones    String?
-  activo           Boolean?              @default(true)
-}
-
-model Caja_Movimiento {
-  id_movimiento Int            @id @default(autoincrement())
-  id_caja       Int
-  fecha         DateTime?      @db.Timestamp(6)
-  concepto      String         @db.VarChar(150)
-  monto         Decimal        @db.Decimal(10, 2)
-  tipo          TipoMovimiento
-  Caja          Caja           @relation(fields: [id_caja], references: [id_caja], onDelete: NoAction, onUpdate: NoAction)
+  Pago              Pago[]
 }
 
 model Consulta_Insumo {
@@ -160,6 +64,20 @@ model Consulta_Servicio {
   Servicio             Servicio @relation(fields: [id_servicio], references: [id_servicio], onDelete: NoAction, onUpdate: NoAction)
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Dueno {
+  id_dueno               Int                      @id @default(autoincrement())
+  nombre_completo        String                   @db.VarChar(150)
+  telefono               String?                  @db.VarChar(30)
+  correo                 String?                  @unique @db.VarChar(150)
+  direccion              String?                  @db.VarChar(255)
+  fecha_registro         DateTime?                @db.Timestamp(6)
+  activo                 Boolean?                 @default(true)
+  password               String?                  @db.VarChar(255)
+  Dueno_Facturacion      Dueno_Facturacion[]
+  Relacion_Dueno_Mascota Relacion_Dueno_Mascota[]
+}
+
 model Dueno_Facturacion {
   id_facturacion Int         @id @default(autoincrement())
   id_dueno       Int
@@ -169,6 +87,45 @@ model Dueno_Facturacion {
   regimen_fiscal String      @db.VarChar(100)
   uso_cfdi       String      @db.VarChar(50)
   Dueno          Dueno       @relation(fields: [id_dueno], references: [id_dueno], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Insumo {
+  id_insumo           Int                 @id @default(autoincrement())
+  nombre              String              @db.VarChar(150)
+  descripcion         String?
+  unidad              String?             @db.VarChar(50)
+  cantidad_disponible Int?                @default(0)
+  costo_unitario      Decimal?            @db.Decimal(10, 2)
+  fecha_registro      DateTime?           @db.Timestamp(6)
+  Consulta_Insumo     Consulta_Insumo[]
+  Movimiento_Insumo   Movimiento_Insumo[]
+}
+
+model Mascota {
+  id_mascota             Int                      @id @default(autoincrement())
+  nombre                 String                   @db.VarChar(100)
+  especie                String                   @db.VarChar(50)
+  raza                   String?                  @db.VarChar(100)
+  fecha_nacimiento       DateTime?                @db.Date
+  sexo                   SexoMascota?
+  color                  String?                  @db.VarChar(50)
+  senias_particulares    String?
+  Consulta               Consulta[]
+  Relacion_Dueno_Mascota Relacion_Dueno_Mascota[]
+}
+
+model Movimiento {
+  id_movimiento    Int                   @id @default(autoincrement())
+  fecha            DateTime?             @db.Timestamp(6)
+  tipo             TipoMovimientoGeneral
+  concepto         String                @db.VarChar(200)
+  monto            Decimal?              @db.Decimal(10, 2)
+  cantidad         Int?
+  referencia_id    Int?
+  referencia_tabla String?               @db.VarChar(50)
+  usuario          String?               @db.VarChar(100)
+  observaciones    String?
+  activo           Boolean?              @default(true)
 }
 
 model Movimiento_Insumo {
@@ -182,6 +139,33 @@ model Movimiento_Insumo {
   Insumo               Insumo               @relation(fields: [id_insumo], references: [id_insumo], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model Pago {
+  id_pago        Int              @id @default(autoincrement())
+  id_consulta    Int?
+  fecha          DateTime?        @db.Timestamp(6)
+  monto          Decimal          @db.Decimal(10, 2)
+  metodo         MetodoPago
+  estado         EstadoPago?      @default(pendiente)
+  id_caja        Int?
+  Caja           Caja?            @relation(fields: [id_caja], references: [id_caja], onDelete: NoAction, onUpdate: NoAction)
+  Consulta       Consulta?        @relation(fields: [id_consulta], references: [id_consulta], onDelete: NoAction, onUpdate: NoAction)
+  Venta_Producto Venta_Producto[]
+
+  @@index([id_caja])
+}
+
+model Producto {
+  id_producto         Int              @id @default(autoincrement())
+  nombre              String           @db.VarChar(150)
+  descripcion         String?
+  precio              Decimal          @db.Decimal(10, 2)
+  cantidad_disponible Int?             @default(0)
+  categoria           String?          @db.VarChar(50)
+  fecha_registro      DateTime?        @db.Timestamp(6)
+  activo              Boolean?         @default(true)
+  Venta_Producto      Venta_Producto[]
+}
+
 model Relacion_Dueno_Mascota {
   id_relacion Int      @id @default(autoincrement())
   id_dueno    Int
@@ -189,6 +173,15 @@ model Relacion_Dueno_Mascota {
   rol         RolDueno
   Dueno       Dueno    @relation(fields: [id_dueno], references: [id_dueno], onDelete: NoAction, onUpdate: NoAction)
   Mascota     Mascota  @relation(fields: [id_mascota], references: [id_mascota], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Servicio {
+  id_servicio       Int                 @id @default(autoincrement())
+  nombre            String              @db.VarChar(150)
+  descripcion       String?
+  costo             Decimal             @db.Decimal(10, 2)
+  duracion_estimada Int?
+  Consulta_Servicio Consulta_Servicio[]
 }
 
 model Venta_Producto {
@@ -202,9 +195,30 @@ model Venta_Producto {
   Producto    Producto  @relation(fields: [id_producto], references: [id_producto], onDelete: NoAction, onUpdate: NoAction)
 }
 
-enum RolDueno {
-  principal
-  acreditado
+model Veterinario {
+  id_veterinario  Int        @id @default(autoincrement())
+  nombre_completo String     @db.VarChar(150)
+  cedula          String?    @unique @db.VarChar(50)
+  especialidad    String?    @db.VarChar(100)
+  telefono        String?    @db.VarChar(30)
+  correo          String?    @unique @db.VarChar(150)
+  activo          Boolean?   @default(true)
+  password        String?    @db.VarChar(255)
+  rol             String?    @default("veterinario") @db.VarChar(50)
+  Consulta        Consulta[]
+}
+
+enum EstadoConsulta {
+  programada
+  en_proceso
+  finalizada
+  cancelada
+}
+
+enum EstadoPago {
+  pendiente
+  pagado
+  cancelado
 }
 
 enum MetodoPago {
@@ -215,22 +229,9 @@ enum MetodoPago {
   deposito
 }
 
-enum EstadoPago {
-  pendiente
-  pagado
-  cancelado
-}
-
-enum TipoPersona {
-  fisica
-  moral
-}
-
-enum EstadoConsulta {
-  programada
-  en_proceso
-  finalizada
-  cancelada
+enum RolDueno {
+  principal
+  acreditado
 }
 
 enum SexoMascota {
@@ -243,11 +244,6 @@ enum TipoMovimiento {
   Egreso
 }
 
-enum TipoMovimientoInsumo {
-  Entrada
-  Salida
-}
-
 enum TipoMovimientoGeneral {
   caja_ingreso
   caja_egreso
@@ -257,4 +253,14 @@ enum TipoMovimientoGeneral {
   pago_consulta
   devolucion
   ajuste_inventario
+}
+
+enum TipoMovimientoInsumo {
+  Entrada
+  Salida
+}
+
+enum TipoPersona {
+  fisica
+  moral
 }

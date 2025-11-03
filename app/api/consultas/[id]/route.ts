@@ -22,7 +22,7 @@ export async function GET(
     const consulta = await prisma.consulta.findUnique({
       where: { id_consulta: idConsulta },
       include: {
-        mascota: {
+        Mascota: {
           include: {
             Relacion_Dueno_Mascota: {
               include: {
@@ -31,7 +31,7 @@ export async function GET(
             },
           },
         },
-        veterinario: true,
+        Veterinario: true,
         Consulta_Insumo: {
           include: {
             Insumo: true,
@@ -42,7 +42,7 @@ export async function GET(
             Servicio: true,
           },
         },
-        pagos: true,
+        Pago: true,
       },
     });
 
@@ -61,8 +61,8 @@ export async function GET(
       }
     } else if (userRole === "dueno") {
       // Cliente solo puede ver consultas de sus mascotas
-      const esSuMascota = consulta.mascota.Relacion_Dueno_Mascota.some(
-        (relacion) => relacion.id_dueno === userId
+      const esSuMascota = consulta.Mascota.Relacion_Dueno_Mascota.some(
+        (relacion: any) => relacion.id_dueno === userId
       );
       if (!esSuMascota) {
         return NextResponse.json({ error: "No autorizado" }, { status: 403 });
@@ -103,7 +103,7 @@ export async function PATCH(
     const consultaActual = await prisma.consulta.findUnique({
       where: { id_consulta: idConsulta },
       include: {
-        mascota: {
+        Mascota: {
           include: {
             Relacion_Dueno_Mascota: true,
           },
@@ -346,24 +346,44 @@ export async function PATCH(
                 },
               });
 
-              // Si hay caja abierta, crear movimiento y cambiar estado a pagado
+              // Si hay caja abierta, crear movimientos detallados y cambiar estado a pagado
               if (cajaAbierta) {
                 await prisma.$transaction(async (tx) => {
-                  // Crear movimiento en caja
-                  await tx.caja_Movimiento.create({
-                    data: {
-                      id_caja: cajaAbierta.id_caja,
-                      fecha: new Date(),
-                      concepto: `Pago consulta #${idConsulta} - Consulta finalizada`,
-                      monto: montoTotal,
-                      tipo: "Ingreso",
-                    },
-                  });
+                  // Crear un movimiento por cada servicio
+                  for (const cs of consultaConDetalles.Consulta_Servicio) {
+                    await tx.caja_Movimiento.create({
+                      data: {
+                        id_caja: cajaAbierta.id_caja,
+                        fecha: new Date(),
+                        concepto: `Consulta #${idConsulta} - Servicio: ${cs.Servicio.nombre}`,
+                        monto: cs.subtotal,
+                        tipo: "Ingreso",
+                      },
+                    });
+                  }
 
-                  // Actualizar pago a pagado
+                  // Crear un movimiento por cada insumo
+                  for (const ci of consultaConDetalles.Consulta_Insumo) {
+                    const montoInsumo =
+                      (Number(ci.Insumo.costo_unitario) || 0) * ci.cantidad;
+                    await tx.caja_Movimiento.create({
+                      data: {
+                        id_caja: cajaAbierta.id_caja,
+                        fecha: new Date(),
+                        concepto: `Consulta #${idConsulta} - Insumo: ${ci.Insumo.nombre} (${ci.cantidad})`,
+                        monto: montoInsumo,
+                        tipo: "Ingreso",
+                      },
+                    });
+                  }
+
+                  // Actualizar pago a pagado y asociarlo a la caja
                   await tx.pago.update({
                     where: { id_pago: pago.id_pago },
-                    data: { estado: "pagado" },
+                    data: {
+                      estado: "pagado",
+                      id_caja: cajaAbierta.id_caja, // ✅ Asociar a la caja actual
+                    },
                   });
                 });
               }
@@ -372,14 +392,41 @@ export async function PATCH(
         }
       }
 
+      // Recargar consulta con todas las relaciones para devolverla completa
+      const consultaCompleta = await prisma.consulta.findUnique({
+        where: { id_consulta: idConsulta },
+        include: {
+          Mascota: {
+            include: {
+              Relacion_Dueno_Mascota: {
+                include: {
+                  Dueno: true,
+                },
+              },
+            },
+          },
+          Veterinario: true,
+          Consulta_Insumo: {
+            include: {
+              Insumo: true,
+            },
+          },
+          Consulta_Servicio: {
+            include: {
+              Servicio: true,
+            },
+          },
+          Pago: true,
+        },
+      });
       return NextResponse.json({
-        consulta,
+        consulta: consultaCompleta,
         message: "Consulta actualizada exitosamente",
       });
     } else if (userRole === "dueno") {
       // Cliente solo puede ver consultas de sus mascotas
-      const esSuMascota = consultaActual.mascota.Relacion_Dueno_Mascota.some(
-        (relacion) => relacion.id_dueno === userId
+      const esSuMascota = consultaActual.Mascota.Relacion_Dueno_Mascota.some(
+        (relacion: any) => relacion.id_dueno === userId
       );
       if (!esSuMascota) {
         return NextResponse.json({ error: "No autorizado" }, { status: 403 });

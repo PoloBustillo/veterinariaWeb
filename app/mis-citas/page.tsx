@@ -30,8 +30,8 @@ export default async function MisCitasPage() {
       },
     },
     include: {
-      mascota: true,
-      veterinario: true,
+      Mascota: true,
+      Veterinario: true,
     },
     orderBy: {
       fecha: "desc",
@@ -133,7 +133,7 @@ export default async function MisCitasPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-gray-900">
-                        🐾 {consulta.mascota.nombre}
+                        🐾 {consulta.Mascota.nombre}
                       </h3>
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${getEstadoBadge(
@@ -144,8 +144,8 @@ export default async function MisCitasPage() {
                       </span>
                     </div>
                     <p className="text-gray-600">
-                      {consulta.mascota.especie} •{" "}
-                      {consulta.mascota.raza || "Sin raza"}
+                      {consulta.Mascota.especie} •{" "}
+                      {consulta.Mascota.raza || "Sin raza"}
                     </p>
                   </div>
                   <div className="text-right">
@@ -170,11 +170,11 @@ export default async function MisCitasPage() {
                   <div>
                     <p className="text-sm text-gray-500 mb-1">👨‍⚕️ Veterinario</p>
                     <p className="font-semibold text-gray-900">
-                      Dr(a). {consulta.veterinario.nombre_completo}
+                      Dr(a). {consulta.Veterinario.nombre_completo}
                     </p>
-                    {consulta.veterinario.especialidad && (
+                    {consulta.Veterinario.especialidad && (
                       <p className="text-sm text-gray-600">
-                        {consulta.veterinario.especialidad}
+                        {consulta.Veterinario.especialidad}
                       </p>
                     )}
                   </div>

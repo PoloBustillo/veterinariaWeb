@@ -19,18 +19,19 @@ export async function GET(request: Request) {
       );
     }
 
-    // Buscar pagos que no tienen movimiento de caja asociado
+    // Buscar pagos que NO están asociados a ninguna caja (id_caja es NULL)
     const pagosPendientes = await prisma.pago.findMany({
       where: {
         estado: "pagado",
+        id_caja: null, // ✅ Solo pagos sin caja asociada
         fecha: {
           gte: new Date(new Date().setHours(0, 0, 0, 0)), // Desde hoy
         },
       },
       include: {
-        consulta: {
+        Consulta: {
           include: {
-            mascota: {
+            Mascota: {
               include: {
                 Relacion_Dueno_Mascota: {
                   include: {
@@ -39,7 +40,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            veterinario: true,
+            Veterinario: true,
           },
         },
         Venta_Producto: {
@@ -53,57 +54,11 @@ export async function GET(request: Request) {
       },
     });
 
-    // Obtener IDs de pagos que ya tienen movimiento en caja
-    const movimientosExistentes = await prisma.caja_Movimiento.findMany({
-      where: {
-        OR: [
-          { concepto: { contains: "Pago consulta" } },
-          { concepto: { contains: "Venta de productos" } },
-        ],
-      },
-      select: {
-        concepto: true,
-      },
-    });
-
-    // Extraer IDs de consultas y pagos de los conceptos
-    const consultasConMovimiento = new Set<number>();
-    const ventasConMovimiento = new Set<string>();
-
-    movimientosExistentes.forEach((m) => {
-      // Para consultas: "Pago consulta #123"
-      const matchConsulta = m.concepto.match(/Pago consulta #(\d+)/);
-      if (matchConsulta) {
-        consultasConMovimiento.add(parseInt(matchConsulta[1]));
-      }
-
-      // Para ventas: "Venta de productos: 2x Producto A, 1x Producto B"
-      if (m.concepto.includes("Venta de productos")) {
-        ventasConMovimiento.add(m.concepto);
-      }
-    });
-
-    // Filtrar pagos que NO tienen movimiento
-    const pagosSinCaja = pagosPendientes.filter((pago) => {
-      // Si es pago de consulta
-      if (pago.id_consulta) {
-        return !consultasConMovimiento.has(pago.id_consulta);
-      }
-
-      // Si es venta de productos
-      if (pago.Venta_Producto && pago.Venta_Producto.length > 0) {
-        // Verificar si ya existe un movimiento con estos productos
-        // (esto es una simplificación, en producción sería más robusto)
-        return true; // Por ahora incluimos todas las ventas sin movimiento
-      }
-
-      return false;
-    });
-
+    // ✅ Ya no necesitamos filtrar manualmente, el WHERE con id_caja: null lo hace
     return NextResponse.json({
-      pagosPendientes: pagosSinCaja,
-      total: pagosSinCaja.length,
-      totalMonto: pagosSinCaja.reduce((sum, p) => sum + Number(p.monto), 0),
+      pagosPendientes: pagosPendientes,
+      total: pagosPendientes.length,
+      totalMonto: pagosPendientes.reduce((sum, p) => sum + Number(p.monto), 0),
     });
   } catch (error) {
     console.error("Error al obtener pagos pendientes:", error);

@@ -208,7 +208,7 @@ export default function VentaProductosForm() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Sección de Selección de Productos */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">
           📦 Seleccionar Productos
         </h2>
 
@@ -219,14 +219,14 @@ export default function VentaProductosForm() {
             placeholder="🔍 Buscar producto o categoría..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
           />
         </div>
 
         {/* Lista de Productos */}
         <div className="space-y-3 max-h-[500px] overflow-y-auto mb-4">
           {productosFiltrados.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">
+            <p className="text-gray-600 text-center py-4">
               {busqueda
                 ? "No se encontraron productos"
                 : "No hay productos disponibles"}
@@ -243,36 +243,36 @@ export default function VentaProductosForm() {
               return (
                 <div
                   key={producto.id_producto}
-                  className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                  className={`border-2 rounded-lg p-3 cursor-pointer transition-all ${
                     productoSeleccionado === producto.id_producto
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 hover:border-blue-300"
+                      ? "border-blue-600 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400 hover:bg-gray-50"
                   } ${stockRestante === 0 ? "opacity-50" : ""}`}
                   onClick={() => setProductoSeleccionado(producto.id_producto)}
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-800">
+                      <h3 className="font-semibold text-gray-900">
                         {producto.nombre}
                       </h3>
                       {producto.descripcion && (
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-gray-700 mt-1">
                           {producto.descripcion}
                         </p>
                       )}
                       {producto.categoria && (
-                        <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded mt-2">
+                        <span className="inline-block bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded mt-2">
                           {producto.categoria}
                         </span>
                       )}
                     </div>
                     <div className="text-right ml-4">
-                      <p className="text-lg font-bold text-green-600">
+                      <p className="text-lg font-bold text-green-700">
                         ${Number(producto.precio).toFixed(2)}
                       </p>
                       <p
-                        className={`text-sm ${
-                          stockRestante > 0 ? "text-gray-600" : "text-red-600"
+                        className={`text-sm font-medium ${
+                          stockRestante > 0 ? "text-gray-700" : "text-red-700"
                         }`}
                       >
                         Stock: {stockRestante}
@@ -293,13 +293,13 @@ export default function VentaProductosForm() {
             min="1"
             value={cantidadAAgregar}
             onChange={(e) => setCantidadAAgregar(parseInt(e.target.value) || 1)}
-            className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-20 px-3 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-medium"
           />
           <button
             type="button"
             onClick={agregarAlCarrito}
             disabled={!productoSeleccionado}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-semibold transition-colors"
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors shadow-sm"
           >
             ➕ Agregar al Carrito
           </button>
@@ -308,14 +308,14 @@ export default function VentaProductosForm() {
 
       {/* Carrito y Pago */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">
           🛒 Carrito de Compra
         </h2>
 
         {carrito.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-gray-600">
             <p className="text-4xl mb-2">🛒</p>
-            <p>El carrito está vacío</p>
+            <p className="font-medium">El carrito está vacío</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -324,10 +324,10 @@ export default function VentaProductosForm() {
               {carrito.map((item) => (
                 <div
                   key={item.producto.id_producto}
-                  className="border border-gray-200 rounded-lg p-3"
+                  className="border-2 border-gray-300 rounded-lg p-3 bg-gray-50"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-gray-800 flex-1">
+                    <h3 className="font-semibold text-gray-900 flex-1">
                       {item.producto.nombre}
                     </h3>
                     <button
@@ -335,7 +335,7 @@ export default function VentaProductosForm() {
                       onClick={() =>
                         eliminarDelCarrito(item.producto.id_producto)
                       }
-                      className="text-red-600 hover:text-red-800 ml-2"
+                      className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded p-1 ml-2"
                       title="Eliminar"
                     >
                       🗑️
@@ -351,11 +351,11 @@ export default function VentaProductosForm() {
                             item.cantidad - 1
                           )
                         }
-                        className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center"
+                        className="bg-gray-300 hover:bg-gray-400 w-8 h-8 rounded flex items-center justify-center font-bold shadow-sm"
                       >
                         −
                       </button>
-                      <span className="w-12 text-center font-semibold">
+                      <span className="w-12 text-center font-semibold text-gray-900">
                         {item.cantidad}
                       </span>
                       <button
@@ -366,16 +366,16 @@ export default function VentaProductosForm() {
                             item.cantidad + 1
                           )
                         }
-                        className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center"
+                        className="bg-gray-300 hover:bg-gray-400 w-8 h-8 rounded flex items-center justify-center font-bold shadow-sm"
                       >
                         +
                       </button>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-700 font-medium">
                         ${Number(item.producto.precio).toFixed(2)} c/u
                       </p>
-                      <p className="font-bold text-green-600">
+                      <p className="font-bold text-green-700 text-lg">
                         ${item.subtotal.toFixed(2)}
                       </p>
                     </div>
@@ -387,8 +387,8 @@ export default function VentaProductosForm() {
             {/* Total */}
             <div className="border-t-2 border-gray-300 pt-4 mb-6">
               <div className="flex justify-between items-center text-2xl font-bold">
-                <span>Total:</span>
-                <span className="text-green-600">
+                <span className="text-gray-900">Total:</span>
+                <span className="text-green-700">
                   ${calcularTotal().toFixed(2)}
                 </span>
               </div>
@@ -396,13 +396,13 @@ export default function VentaProductosForm() {
 
             {/* Método de pago */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-800 mb-2">
                 💳 Método de Pago
               </label>
               <select
                 value={metodoPago}
                 onChange={(e) => setMetodoPago(e.target.value as any)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-medium shadow-sm"
                 required
               >
                 <option value="efectivo">💵 Efectivo</option>
@@ -413,7 +413,7 @@ export default function VentaProductosForm() {
 
             {/* Error */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+              <div className="bg-red-50 border-2 border-red-300 text-red-800 px-4 py-3 rounded-lg mb-4 font-medium shadow-sm">
                 {error}
               </div>
             )}
@@ -422,7 +422,7 @@ export default function VentaProductosForm() {
             <button
               type="submit"
               disabled={cargando || carrito.length === 0}
-              className="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-bold text-lg transition-colors"
+              className="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-bold text-lg transition-colors shadow-md hover:shadow-lg"
             >
               {cargando ? "Procesando..." : "✅ Registrar Venta"}
             </button>

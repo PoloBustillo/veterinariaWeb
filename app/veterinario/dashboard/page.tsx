@@ -72,7 +72,7 @@ export default async function DashboardVeterinarioPage() {
       },
     },
     include: {
-      mascota: {
+      Mascota: {
         include: {
           Relacion_Dueno_Mascota: {
             include: {
@@ -226,7 +226,7 @@ export default async function DashboardVeterinarioPage() {
               <div className="space-y-4">
                 {proximasConsultas.map((consulta) => {
                   const dueno =
-                    consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
+                    consulta.Mascota.Relacion_Dueno_Mascota[0]?.Dueno;
                   return (
                     <div
                       key={consulta.id_consulta}
@@ -236,12 +236,12 @@ export default async function DashboardVeterinarioPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
                             <h3 className="font-semibold text-gray-900">
-                              {consulta.mascota.nombre}
+                              {consulta.Mascota.nombre}
                             </h3>
                             <span className="text-sm text-gray-500">
-                              {consulta.mascota.especie}
-                              {consulta.mascota.raza &&
-                                ` • ${consulta.mascota.raza}`}
+                              {consulta.Mascota.especie}
+                              {consulta.Mascota.raza &&
+                                ` • ${consulta.Mascota.raza}`}
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">

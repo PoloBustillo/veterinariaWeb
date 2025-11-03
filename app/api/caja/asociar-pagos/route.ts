@@ -33,24 +33,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // Obtener pagos pendientes de hoy
+    // Obtener pagos pendientes de hoy que NO estén asociados a ninguna caja
     const pagosPendientes = await prisma.pago.findMany({
       where: {
         estado: "pagado",
+        id_caja: null, // Solo pagos que no han sido asociados a ninguna caja
         fecha: {
           gte: new Date(new Date().setHours(0, 0, 0, 0)),
         },
       },
       include: {
-        consulta: {
+        Consulta: {
           include: {
-            mascota: {
+            Mascota: {
               include: {
                 Relacion_Dueno_Mascota: {
                   include: {
                     Dueno: true,
                   },
                 },
+              },
+            },
+            Consulta_Servicio: {
+              include: {
+                Servicio: true,
+              },
+            },
+            Consulta_Insumo: {
+              include: {
+                Insumo: true,
               },
             },
           },
@@ -63,83 +74,101 @@ export async function POST(request: Request) {
       },
     });
 
-    // Verificar cuáles ya tienen movimiento
-    const movimientosExistentes = await prisma.caja_Movimiento.findMany({
-      where: {
-        id_caja: cajaAbierta.id_caja,
-        OR: [
-          { concepto: { contains: "Pago consulta" } },
-          { concepto: { contains: "Venta de productos" } },
-        ],
-      },
-      select: {
-        concepto: true,
-      },
-    });
-
-    const consultasConMovimiento = new Set<number>();
-
-    movimientosExistentes.forEach((m) => {
-      const matchConsulta = m.concepto.match(/Pago consulta #(\d+)/);
-      if (matchConsulta) {
-        consultasConMovimiento.add(parseInt(matchConsulta[1]));
-      }
-    });
-
-    // Filtrar pagos sin movimiento
-    const pagosSinCaja = pagosPendientes.filter((pago) => {
-      // Si es pago de consulta
-      if (pago.id_consulta) {
-        return !consultasConMovimiento.has(pago.id_consulta);
-      }
-
-      // Si es venta de productos (no tiene id_consulta)
-      if (pago.Venta_Producto && pago.Venta_Producto.length > 0) {
-        return true; // Incluir ventas sin movimiento
-      }
-
-      return false;
-    });
+    if (pagosPendientes.length === 0) {
+      return NextResponse.json({
+        message: "No hay pagos pendientes de asociar",
+        pagosAsociados: 0,
+        movimientosCreados: 0,
+        totalMonto: 0,
+      });
+    }
 
     // Crear movimientos de caja para cada pago pendiente
-    const movimientosCreados = await prisma.$transaction(
-      pagosSinCaja.map((pago) => {
-        let concepto: string;
+    let totalMovimientosCreados = 0;
 
-        // Si es pago de consulta
-        if (pago.id_consulta) {
-          const cliente =
-            pago.consulta?.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
-          concepto = `Pago consulta #${pago.id_consulta} - ${
-            cliente?.nombre_completo || "Cliente"
-          } (Asociado automáticamente)`;
+    await prisma.$transaction(async (tx) => {
+      for (const pago of pagosPendientes) {
+        // Si es pago de consulta con detalles
+        if (pago.id_consulta && pago.Consulta) {
+          // Crear un movimiento por cada servicio
+          if (pago.Consulta.Consulta_Servicio) {
+            for (const cs of pago.Consulta.Consulta_Servicio) {
+              await tx.caja_Movimiento.create({
+                data: {
+                  id_caja: cajaAbierta.id_caja,
+                  fecha: pago.fecha || new Date(),
+                  concepto: `Consulta #${pago.id_consulta} - Servicio: ${cs.Servicio.nombre} (Asociado)`,
+                  monto: cs.subtotal,
+                  tipo: "Ingreso",
+                },
+              });
+              totalMovimientosCreados++;
+            }
+          }
+
+          // Crear un movimiento por cada insumo
+          if (pago.Consulta.Consulta_Insumo) {
+            for (const ci of pago.Consulta.Consulta_Insumo) {
+              const montoInsumo =
+                (Number(ci.Insumo.costo_unitario) || 0) * ci.cantidad;
+              await tx.caja_Movimiento.create({
+                data: {
+                  id_caja: cajaAbierta.id_caja,
+                  fecha: pago.fecha || new Date(),
+                  concepto: `Consulta #${pago.id_consulta} - Insumo: ${ci.Insumo.nombre} (${ci.cantidad}) (Asociado)`,
+                  monto: montoInsumo,
+                  tipo: "Ingreso",
+                },
+              });
+              totalMovimientosCreados++;
+            }
+          }
         }
         // Si es venta de productos
         else if (pago.Venta_Producto && pago.Venta_Producto.length > 0) {
-          const productosStr = pago.Venta_Producto.map(
-            (v) => `${v.cantidad}x ${v.Producto.nombre}`
-          ).join(", ");
-          concepto = `Venta de productos: ${productosStr} (Asociado automáticamente)`;
-        } else {
-          concepto = "Pago (Asociado automáticamente)";
+          for (const vp of pago.Venta_Producto) {
+            await tx.caja_Movimiento.create({
+              data: {
+                id_caja: cajaAbierta.id_caja,
+                fecha: pago.fecha || new Date(),
+                concepto: `Venta: ${vp.cantidad}x ${vp.Producto.nombre} (Asociado)`,
+                monto: vp.subtotal,
+                tipo: "Ingreso",
+              },
+            });
+            totalMovimientosCreados++;
+          }
+        }
+        // Fallback para pagos sin detalle
+        else {
+          await tx.caja_Movimiento.create({
+            data: {
+              id_caja: cajaAbierta.id_caja,
+              fecha: pago.fecha || new Date(),
+              concepto: `Pago #${pago.id_pago} (Asociado automáticamente)`,
+              monto: pago.monto,
+              tipo: "Ingreso",
+            },
+          });
+          totalMovimientosCreados++;
         }
 
-        return prisma.caja_Movimiento.create({
-          data: {
-            id_caja: cajaAbierta.id_caja,
-            fecha: pago.fecha || new Date(),
-            concepto,
-            monto: pago.monto,
-            tipo: "Ingreso",
-          },
+        // ✅ IMPORTANTE: Marcar el pago como asociado a esta caja
+        await tx.pago.update({
+          where: { id_pago: pago.id_pago },
+          data: { id_caja: cajaAbierta.id_caja },
         });
-      })
-    );
+      }
+    });
 
     return NextResponse.json({
-      message: `${movimientosCreados.length} pagos asociados a la caja`,
-      pagosAsociados: movimientosCreados.length,
-      totalMonto: pagosSinCaja.reduce((sum, p) => sum + Number(p.monto), 0),
+      message: `${totalMovimientosCreados} movimientos asociados a la caja`,
+      pagosAsociados: pagosPendientes.length,
+      movimientosCreados: totalMovimientosCreados,
+      totalMonto: pagosPendientes.reduce(
+        (sum: number, p) => sum + Number(p.monto),
+        0
+      ),
     });
   } catch (error) {
     console.error("Error al asociar pagos:", error);

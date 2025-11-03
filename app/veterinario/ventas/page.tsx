@@ -15,7 +15,7 @@ export default async function VentaProductosPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <main className="min-h-screen bg-gray-50">
       <InternalNav
         userName={session.user.name || "Usuario"}
         userEmail={session.user.email || ""}
@@ -26,10 +26,10 @@ export default async function VentaProductosPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">
+            <h1 className="text-3xl font-bold text-gray-900">
               🛒 Venta de Productos
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-700 mt-2">
               Registra ventas de productos y medicamentos
             </p>
           </div>

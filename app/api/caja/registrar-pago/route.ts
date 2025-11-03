@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             Servicio: true,
           },
         },
-        mascota: {
+        Mascota: {
           include: {
             Relacion_Dueno_Mascota: {
               include: {
@@ -49,9 +49,12 @@ export async function POST(request: Request) {
       );
     }
 
+    // Obtener información del cliente antes de la transacción
+    const cliente = consulta.Mascota.Relacion_Dueno_Mascota[0]?.Dueno;
+
     // Usar transacción para registrar pago y opcionalmente movimiento de caja
     const resultado = await prisma.$transaction(async (tx) => {
-      // 1. Registrar pago
+      // 1. Registrar pago (asociar id_caja si hay caja abierta)
       const pago = await tx.pago.create({
         data: {
           id_consulta: parseInt(id_consulta),
@@ -59,13 +62,14 @@ export async function POST(request: Request) {
           monto,
           metodo,
           estado: "pagado",
+          // Si hay caja abierta, asociar el pago inmediatamente
+          ...(cajaAbierta ? { id_caja: cajaAbierta.id_caja } : {}),
         },
       });
 
       // 2. Registrar movimiento en caja SI hay caja abierta
       let movimiento = null;
       if (cajaAbierta) {
-        const cliente = consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
         const concepto = `Pago consulta #${id_consulta} - ${
           cliente?.nombre_completo || "Cliente"
         }`;

@@ -138,19 +138,26 @@ export async function POST(request: NextRequest) {
 
       let movimientoCaja = null;
       if (cajaAbierta) {
-        const conceptoProductos = productosValidados
-          .map((p) => `${p.cantidad}x ${p.nombre}`)
-          .join(", ");
-
-        movimientoCaja = await tx.caja_Movimiento.create({
-          data: {
-            id_caja: cajaAbierta.id_caja,
-            fecha: new Date(),
-            concepto: `Venta de productos: ${conceptoProductos}`,
-            monto: montoTotal,
-            tipo: "Ingreso",
-          },
+        // ✅ Asociar el pago a la caja abierta
+        await tx.pago.update({
+          where: { id_pago: pago.id_pago },
+          data: { id_caja: cajaAbierta.id_caja },
         });
+
+        // Crear un movimiento por cada producto vendido
+        for (const item of productosValidados) {
+          await tx.caja_Movimiento.create({
+            data: {
+              id_caja: cajaAbierta.id_caja,
+              fecha: new Date(),
+              concepto: `Venta: ${item.cantidad}x ${item.nombre}`,
+              monto: item.subtotal,
+              tipo: "Ingreso",
+            },
+          });
+        }
+
+        movimientoCaja = { creado: true }; // Indicador de que se crearon movimientos
       }
 
       return {
@@ -173,7 +180,7 @@ export async function POST(request: NextRequest) {
         productos: resultado.ventas.length,
         metodo_pago,
         fecha: resultado.pago.fecha,
-        movimiento_caja: resultado.movimientoCaja?.id_movimiento,
+        movimientos_creados: resultado.movimientoCaja ? true : false,
         sin_caja: resultado.sinCaja,
       },
     });

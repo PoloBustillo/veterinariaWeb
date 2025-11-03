@@ -108,8 +108,8 @@ export async function POST(request: NextRequest) {
     const consultaCompleta = await prisma.consulta.findUnique({
       where: { id_consulta: nuevaConsulta.id_consulta },
       include: {
-        mascota: true,
-        veterinario: true,
+        Mascota: true,
+        Veterinario: true,
       },
     });
 
@@ -118,8 +118,8 @@ export async function POST(request: NextRequest) {
         message: "Cita agendada exitosamente",
         consulta: {
           id_consulta: nuevaConsulta.id_consulta,
-          mascota: consultaCompleta?.mascota.nombre,
-          veterinario: consultaCompleta?.veterinario.nombre_completo,
+          mascota: consultaCompleta?.Mascota.nombre,
+          veterinario: consultaCompleta?.Veterinario.nombre_completo,
           fecha: nuevaConsulta.fecha,
           motivo: nuevaConsulta.motivo,
           estado: nuevaConsulta.estado,
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest) {
     const consultas = await prisma.consulta.findMany({
       where,
       include: {
-        mascota: {
+        Mascota: {
           include: {
             Relacion_Dueno_Mascota: {
               include: {
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        veterinario: true,
+        Veterinario: true,
       },
       orderBy: {
         fecha: "desc",
@@ -179,8 +179,8 @@ export async function GET(request: NextRequest) {
     });
 
     // Transformar datos
-    const consultasFormateadas = consultas.map((consulta) => {
-      const duenoPrincipal = consulta.mascota.Relacion_Dueno_Mascota.find(
+    const consultasFormateadas = consultas.map((consulta: any) => {
+      const duenoPrincipal = consulta.Mascota.Relacion_Dueno_Mascota.find(
         (rel: any) => rel.rol === "principal"
       );
 
@@ -193,10 +193,10 @@ export async function GET(request: NextRequest) {
         estado: consulta.estado,
         observaciones: consulta.observaciones,
         mascota: {
-          id_mascota: consulta.mascota.id_mascota,
-          nombre: consulta.mascota.nombre,
-          especie: consulta.mascota.especie,
-          raza: consulta.mascota.raza,
+          id_mascota: consulta.Mascota.id_mascota,
+          nombre: consulta.Mascota.nombre,
+          especie: consulta.Mascota.especie,
+          raza: consulta.Mascota.raza,
         },
         dueno: duenoPrincipal
           ? {
@@ -207,10 +207,10 @@ export async function GET(request: NextRequest) {
             }
           : null,
         veterinario: {
-          id_veterinario: consulta.veterinario.id_veterinario,
-          nombre_completo: consulta.veterinario.nombre_completo,
-          especialidad: consulta.veterinario.especialidad,
-          telefono: consulta.veterinario.telefono,
+          id_veterinario: consulta.Veterinario.id_veterinario,
+          nombre_completo: consulta.Veterinario.nombre_completo,
+          especialidad: consulta.Veterinario.especialidad,
+          telefono: consulta.Veterinario.telefono,
         },
       };
     });
