@@ -179,77 +179,78 @@ export async function PATCH(
         },
       });
 
-      // Agregar insumos si se proporcionan
-      if (insumos && Array.isArray(insumos)) {
-        for (const insumo of insumos) {
-          const { id_insumo, cantidad } = insumo;
+      // Agregar insumos si se proporcionan (usar transacción)
+      if (insumos && Array.isArray(insumos) && insumos.length > 0) {
+        await prisma.$transaction(async (tx) => {
+          for (const insumo of insumos) {
+            const { id_insumo, cantidad } = insumo;
 
-          // Verificar disponibilidad
-          const insumoData = await prisma.insumo.findUnique({
-            where: { id_insumo },
-          });
+            // Verificar disponibilidad
+            const insumoData = await tx.insumo.findUnique({
+              where: { id_insumo },
+            });
 
-          if (!insumoData || (insumoData.cantidad_disponible || 0) < cantidad) {
-            return NextResponse.json(
-              {
-                error: `Insumo ${
+            if (
+              !insumoData ||
+              (insumoData.cantidad_disponible || 0) < cantidad
+            ) {
+              throw new Error(
+                `Insumo ${
                   insumoData?.nombre || id_insumo
-                } no tiene suficiente cantidad disponible`,
+                } no tiene suficiente cantidad disponible`
+              );
+            }
+
+            // Agregar insumo a la consulta
+            await tx.consulta_Insumo.create({
+              data: {
+                id_consulta: idConsulta,
+                id_insumo,
+                cantidad,
               },
-              { status: 400 }
-            );
+            });
+
+            // Reducir cantidad disponible
+            await tx.insumo.update({
+              where: { id_insumo },
+              data: {
+                cantidad_disponible: {
+                  decrement: cantidad,
+                },
+              },
+            });
           }
-
-          // Agregar insumo a la consulta
-          await prisma.consulta_Insumo.create({
-            data: {
-              id_consulta: idConsulta,
-              id_insumo,
-              cantidad,
-            },
-          });
-
-          // Reducir cantidad disponible
-          await prisma.insumo.update({
-            where: { id_insumo },
-            data: {
-              cantidad_disponible: {
-                decrement: cantidad,
-              },
-            },
-          });
-        }
+        });
       }
 
-      // Agregar servicios si se proporcionan
-      if (servicios && Array.isArray(servicios)) {
-        for (const servicio of servicios) {
-          const { id_servicio, cantidad = 1 } = servicio;
+      // Agregar servicios si se proporcionan (usar transacción)
+      if (servicios && Array.isArray(servicios) && servicios.length > 0) {
+        await prisma.$transaction(async (tx) => {
+          for (const servicio of servicios) {
+            const { id_servicio, cantidad = 1 } = servicio;
 
-          const servicioData = await prisma.servicio.findUnique({
-            where: { id_servicio },
-          });
+            const servicioData = await tx.servicio.findUnique({
+              where: { id_servicio },
+            });
 
-          if (!servicioData) {
-            return NextResponse.json(
-              { error: `Servicio ${id_servicio} no encontrado` },
-              { status: 400 }
-            );
+            if (!servicioData) {
+              throw new Error(`Servicio ${id_servicio} no encontrado`);
+            }
+
+            // Calcular subtotal
+            const subtotal = servicioData.costo.toNumber() * cantidad;
+
+            // Agregar servicio a la consulta
+            await tx.consulta_Servicio.create({
+              data: {
+                id_consulta: idConsulta,
+                id_servicio,
+                cantidad,
+                subtotal,
+              },
+            });
           }
-
-          // Calcular subtotal
-          const subtotal = servicioData.costo.toNumber() * cantidad;
-
-          // Agregar servicio a la consulta
-          await prisma.consulta_Servicio.create({
-            data: {
-              id_consulta: idConsulta,
-              id_servicio,
-              cantidad,
-              subtotal,
-            },
-          });
-        }
+        });
       }
 
       return NextResponse.json({

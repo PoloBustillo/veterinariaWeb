@@ -41,6 +41,7 @@ model Veterinario {
   telefono        String?    @db.VarChar(30)
   correo          String?    @unique @db.VarChar(150)
   password        String?    @db.VarChar(255)
+  rol             String?    @default("veterinario") @db.VarChar(50)
   activo          Boolean?   @default(true)
   consultas       Consulta[]
 }

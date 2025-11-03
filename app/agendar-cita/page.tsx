@@ -55,6 +55,7 @@ export default async function AgendarCitaPage() {
         userName={session.user?.name || "Usuario"}
         userEmail={session.user?.email || ""}
         userRole={session.user?.role || "dueno"}
+        isAdmin={session.user?.isAdmin}
       />
 
       {/* Header */}

@@ -24,6 +24,7 @@ export default async function DetalleConsultaPage({
         userName={session.user.name || "Veterinario"}
         userEmail={session.user.email || ""}
         userRole={session.user.role || "veterinario"}
+        isAdmin={session.user.isAdmin}
       />
       <div className="min-h-screen bg-linear-to-b from-green-50 to-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">

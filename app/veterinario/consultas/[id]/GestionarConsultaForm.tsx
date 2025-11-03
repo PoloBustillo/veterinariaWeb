@@ -71,6 +71,7 @@ interface Consulta {
     monto: number;
     metodo: string;
     estado: string | null;
+    fecha: string | null;
   }>;
 }
 
@@ -98,6 +99,12 @@ export default function GestionarConsultaForm({
     tratamiento: "",
     observaciones: "",
   });
+
+  // Estados para pago
+  const [mostrarFormPago, setMostrarFormPago] = useState(false);
+  const [montoPago, setMontoPago] = useState("");
+  const [metodoPago, setMetodoPago] = useState<string>("efectivo");
+  const [procesandoPago, setProcesandoPago] = useState(false);
 
   const [insumosSeleccionados, setInsumosSeleccionados] = useState<
     Array<{ id_insumo: number; cantidad: number }>
@@ -258,6 +265,70 @@ export default function GestionarConsultaForm({
       setUpdating(false);
     }
   };
+
+  const handleRegistrarPago = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!montoPago || parseFloat(montoPago) <= 0) {
+      setError("El monto debe ser mayor a 0");
+      return;
+    }
+
+    setProcesandoPago(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/caja/registrar-pago", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_consulta: consultaId,
+          monto: parseFloat(montoPago),
+          metodo: metodoPago,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess("Pago registrado exitosamente en caja");
+        setMontoPago("");
+        setMostrarFormPago(false);
+        // Recargar consulta para mostrar el pago
+        const consultaRes = await fetch(`/api/consultas/${consultaId}`);
+        const consultaData = await consultaRes.json();
+        if (consultaRes.ok) {
+          setConsulta(consultaData.consulta);
+        }
+        router.refresh();
+      } else {
+        setError(data.error || "Error al registrar pago");
+      }
+    } catch (err) {
+      setError("Error al conectar con el servidor");
+    } finally {
+      setProcesandoPago(false);
+    }
+  };
+
+  const calcularTotalConsulta = () => {
+    if (!consulta) return 0;
+
+    const totalServicios = consulta.Consulta_Servicio.reduce(
+      (sum, cs) => sum + Number(cs.subtotal),
+      0
+    );
+
+    const totalInsumos = consulta.Consulta_Insumo.reduce((sum, ci) => {
+      const costo = ci.Insumo.costo_unitario || 0;
+      return sum + Number(costo) * ci.cantidad;
+    }, 0);
+
+    return totalServicios + totalInsumos;
+  };
+
+  const totalPagado =
+    consulta?.pagos.reduce((sum, p) => sum + Number(p.monto), 0) || 0;
 
   const agregarInsumo = (id_insumo: number) => {
     if (!insumosSeleccionados.find((i) => i.id_insumo === id_insumo)) {
@@ -739,7 +810,151 @@ export default function GestionarConsultaForm({
                 {updating ? "Finalizando..." : "✅ Finalizar Consulta"}
               </button>
             )}
+
+            {consulta.estado === "finalizada" && (
+              <button
+                onClick={() => setMostrarFormPago(!mostrarFormPago)}
+                className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition"
+              >
+                {mostrarFormPago ? "❌ Cancelar Pago" : "💰 Registrar Pago"}
+              </button>
+            )}
           </div>
+
+          {/* Resumen de costos y pagos */}
+          {consulta.estado === "finalizada" && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+              <h3 className="font-bold text-gray-900 mb-3">
+                💵 Resumen Financiero
+              </h3>
+              <div className="space-y-2 text-gray-700">
+                <div className="flex justify-between">
+                  <span>Total de la consulta:</span>
+                  <span className="font-semibold">
+                    ${calcularTotalConsulta().toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Total pagado:</span>
+                  <span className="font-semibold text-green-600">
+                    ${totalPagado.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-blue-300">
+                  <span className="font-bold">Saldo pendiente:</span>
+                  <span
+                    className={`font-bold ${
+                      calcularTotalConsulta() - totalPagado > 0
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    ${(calcularTotalConsulta() - totalPagado).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Pagos registrados */}
+              {consulta.pagos.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-blue-300">
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    📜 Pagos Registrados:
+                  </h4>
+                  <div className="space-y-2">
+                    {consulta.pagos.map((pago) => (
+                      <div
+                        key={pago.id_pago}
+                        className="flex justify-between items-center text-sm bg-white p-2 rounded"
+                      >
+                        <div>
+                          <span className="font-medium">{pago.metodo}</span>
+                          <span className="text-gray-500 ml-2">
+                            {pago.fecha
+                              ? new Date(pago.fecha).toLocaleDateString("es-MX")
+                              : "Sin fecha"}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-green-600">
+                          ${Number(pago.monto).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Formulario de registro de pago */}
+          {mostrarFormPago && consulta.estado === "finalizada" && (
+            <form
+              onSubmit={handleRegistrarPago}
+              className="mt-6 p-4 bg-yellow-50 rounded-lg border-2 border-yellow-300"
+            >
+              <h3 className="font-bold text-gray-900 mb-4">
+                💰 Registrar Nuevo Pago
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Monto a pagar:
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={montoPago}
+                    onChange={(e) => setMontoPago(e.target.value)}
+                    placeholder="0.00"
+                    required
+                    className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 bg-white text-gray-900 placeholder-gray-500"
+                  />
+                  <p className="text-xs text-gray-600 mt-1">
+                    Saldo pendiente: $
+                    {(calcularTotalConsulta() - totalPagado).toFixed(2)}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Método de pago:
+                  </label>
+                  <select
+                    value={metodoPago}
+                    onChange={(e) => setMetodoPago(e.target.value)}
+                    className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-yellow-500 bg-white text-gray-900"
+                  >
+                    <option value="efectivo">💵 Efectivo</option>
+                    <option value="tarjeta">💳 Tarjeta</option>
+                    <option value="transferencia">🏦 Transferencia</option>
+                    <option value="cheque">📝 Cheque</option>
+                    <option value="deposito">🏧 Depósito</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={procesandoPago}
+                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+                  >
+                    {procesandoPago ? "Procesando..." : "✅ Confirmar Pago"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMostrarFormPago(false);
+                      setMontoPago("");
+                    }}
+                    className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
         </div>
       )}
 

@@ -6,14 +6,17 @@ interface InternalNavProps {
   userName: string;
   userEmail: string;
   userRole?: string;
+  isAdmin?: boolean;
 }
 
 export default function InternalNav({
   userName,
   userEmail,
   userRole = "dueno",
+  isAdmin = false,
 }: InternalNavProps) {
   const isVeterinario = userRole === "veterinario";
+  const tieneCajaAcceso = isAdmin;
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -55,10 +58,18 @@ export default function InternalNav({
                 </Link>
                 <Link
                   href="/veterinario/consultas"
-                  className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition font-medium text-sm shadow-md hover:shadow-lg"
+                  className="text-gray-700 hover:text-green-600 transition font-medium text-sm"
                 >
                   Consultas
                 </Link>
+                {tieneCajaAcceso && (
+                  <Link
+                    href="/veterinario/caja"
+                    className="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition font-medium text-sm shadow-md hover:shadow-lg"
+                  >
+                    💰 Caja
+                  </Link>
+                )}
               </>
             ) : (
               <>

@@ -65,6 +65,7 @@ export default async function ConsultasVeterinarioPage() {
         userName={session.user.name || "Veterinario"}
         userEmail={session.user.email || ""}
         userRole={session.user.role || "veterinario"}
+        isAdmin={session.user.isAdmin}
       />
       <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

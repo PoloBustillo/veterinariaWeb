@@ -26,10 +26,17 @@ async function getUser(email: string) {
     });
 
     if (veterinario) {
+      console.log("🔍 Veterinario encontrado:", {
+        email: veterinario.correo,
+        rol: veterinario.rol,
+        isAdmin: veterinario.rol === "admin"
+      });
+      
       return {
         ...veterinario,
         role: "veterinario" as const,
         userId: veterinario.id_veterinario,
+        isAdmin: veterinario.rol === "admin",
       };
     }
 
@@ -94,11 +101,18 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
               );
 
               if (passwordMatch) {
+                console.log("✅ Login exitoso veterinario:", {
+                  email: user.correo,
+                  rol: user.rol,
+                  isAdmin: user.isAdmin
+                });
+                
                 return {
                   id: user.userId.toString(),
                   email: user.correo || "",
                   name: user.nombre_completo,
                   role: "veterinario",
+                  isAdmin: user.isAdmin || false,
                 };
               }
             } else {
@@ -110,6 +124,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                   email: user.correo || "",
                   name: user.nombre_completo,
                   role: "veterinario",
+                  isAdmin: user.isAdmin || false,
                 };
               }
             }
@@ -128,6 +143,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (user) {
         token.id = user.id || "";
         token.role = user.role || "dueno";
+        token.isAdmin = user.isAdmin || false;
       }
       return token;
     },
@@ -135,6 +151,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.isAdmin = token.isAdmin as boolean;
       }
       return session;
     },

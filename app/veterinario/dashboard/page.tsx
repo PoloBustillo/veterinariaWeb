@@ -106,6 +106,7 @@ export default async function DashboardVeterinarioPage() {
         userName={session.user.name || "Veterinario"}
         userEmail={session.user.email || ""}
         userRole={session.user.role || "veterinario"}
+        isAdmin={session.user.isAdmin}
       />
       <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
         {/* Header */}

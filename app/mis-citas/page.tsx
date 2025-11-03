@@ -68,6 +68,7 @@ export default async function MisCitasPage() {
         userName={session.user?.name || "Usuario"}
         userEmail={session.user?.email || ""}
         userRole={session.user?.role || "dueno"}
+        isAdmin={session.user?.isAdmin}
       />
 
       {/* Header */}
