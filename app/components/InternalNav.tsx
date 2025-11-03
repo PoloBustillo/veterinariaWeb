@@ -62,6 +62,12 @@ export default function InternalNav({
                 >
                   Consultas
                 </Link>
+                <Link
+                  href="/veterinario/ventas"
+                  className="text-gray-700 hover:text-green-600 transition font-medium text-sm"
+                >
+                  🛒 Ventas
+                </Link>
                 {tieneCajaAcceso && (
                   <Link
                     href="/veterinario/caja"

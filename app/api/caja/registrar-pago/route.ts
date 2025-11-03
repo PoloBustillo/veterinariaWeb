@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       pago: resultado.pago,
       movimiento: resultado.movimiento,
-      message: cajaAbierta 
+      message: cajaAbierta
         ? "Pago registrado y asociado a caja abierta"
         : "Pago registrado. Será asociado a la caja cuando se abra.",
       sinCaja: !cajaAbierta,

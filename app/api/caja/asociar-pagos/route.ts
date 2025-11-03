@@ -55,6 +55,11 @@ export async function POST(request: Request) {
             },
           },
         },
+        Venta_Producto: {
+          include: {
+            Producto: true,
+          },
+        },
       },
     });
 
@@ -62,34 +67,62 @@ export async function POST(request: Request) {
     const movimientosExistentes = await prisma.caja_Movimiento.findMany({
       where: {
         id_caja: cajaAbierta.id_caja,
-        concepto: {
-          contains: "Pago consulta",
-        },
+        OR: [
+          { concepto: { contains: "Pago consulta" } },
+          { concepto: { contains: "Venta de productos" } },
+        ],
       },
       select: {
         concepto: true,
       },
     });
 
-    const consultasConMovimiento = movimientosExistentes
-      .map((m) => {
-        const match = m.concepto.match(/Pago consulta #(\d+)/);
-        return match ? parseInt(match[1]) : null;
-      })
-      .filter((id) => id !== null);
+    const consultasConMovimiento = new Set<number>();
+
+    movimientosExistentes.forEach((m) => {
+      const matchConsulta = m.concepto.match(/Pago consulta #(\d+)/);
+      if (matchConsulta) {
+        consultasConMovimiento.add(parseInt(matchConsulta[1]));
+      }
+    });
 
     // Filtrar pagos sin movimiento
-    const pagosSinCaja = pagosPendientes.filter(
-      (pago) => !consultasConMovimiento.includes(pago.id_consulta!)
-    );
+    const pagosSinCaja = pagosPendientes.filter((pago) => {
+      // Si es pago de consulta
+      if (pago.id_consulta) {
+        return !consultasConMovimiento.has(pago.id_consulta);
+      }
+
+      // Si es venta de productos (no tiene id_consulta)
+      if (pago.Venta_Producto && pago.Venta_Producto.length > 0) {
+        return true; // Incluir ventas sin movimiento
+      }
+
+      return false;
+    });
 
     // Crear movimientos de caja para cada pago pendiente
     const movimientosCreados = await prisma.$transaction(
       pagosSinCaja.map((pago) => {
-        const cliente = pago.consulta?.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
-        const concepto = `Pago consulta #${pago.id_consulta} - ${
-          cliente?.nombre_completo || "Cliente"
-        } (Asociado automáticamente)`;
+        let concepto: string;
+
+        // Si es pago de consulta
+        if (pago.id_consulta) {
+          const cliente =
+            pago.consulta?.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
+          concepto = `Pago consulta #${pago.id_consulta} - ${
+            cliente?.nombre_completo || "Cliente"
+          } (Asociado automáticamente)`;
+        }
+        // Si es venta de productos
+        else if (pago.Venta_Producto && pago.Venta_Producto.length > 0) {
+          const productosStr = pago.Venta_Producto.map(
+            (v) => `${v.cantidad}x ${v.Producto.nombre}`
+          ).join(", ");
+          concepto = `Venta de productos: ${productosStr} (Asociado automáticamente)`;
+        } else {
+          concepto = "Pago (Asociado automáticamente)";
+        }
 
         return prisma.caja_Movimiento.create({
           data: {

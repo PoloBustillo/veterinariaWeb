@@ -125,12 +125,46 @@ export default function GestionarConsultaForm({
         const consultaData = await consultaRes.json();
 
         if (consultaRes.ok) {
+          // Log para debug - verificar estructura de datos
+          console.log("📋 Consulta cargada:", {
+            id: consultaData.consulta.id_consulta,
+            tiene_mascota: !!consultaData.consulta.mascota,
+            tiene_relaciones:
+              !!consultaData.consulta.mascota?.Relacion_Dueno_Mascota,
+            num_relaciones:
+              consultaData.consulta.mascota?.Relacion_Dueno_Mascota?.length ||
+              0,
+            tiene_dueno:
+              !!consultaData.consulta.mascota?.Relacion_Dueno_Mascota?.[0]
+                ?.Dueno,
+          });
+
           setConsulta(consultaData.consulta);
           setFormData({
             diagnostico: consultaData.consulta.diagnostico || "",
             tratamiento: consultaData.consulta.tratamiento || "",
             observaciones: consultaData.consulta.observaciones || "",
           });
+
+          // Cargar insumos y servicios ya asociados a la consulta
+          if (consultaData.consulta.Consulta_Insumo) {
+            const insumosExistentes = consultaData.consulta.Consulta_Insumo.map(
+              (ci: any) => ({
+                id_insumo: ci.id_insumo,
+                cantidad: ci.cantidad,
+              })
+            );
+            setInsumosSeleccionados(insumosExistentes);
+          }
+
+          if (consultaData.consulta.Consulta_Servicio) {
+            const serviciosExistentes =
+              consultaData.consulta.Consulta_Servicio.map((cs: any) => ({
+                id_servicio: cs.id_servicio,
+                cantidad: cs.cantidad || 1,
+              }));
+            setServiciosSeleccionados(serviciosExistentes);
+          }
         } else {
           setError(consultaData.error);
         }
@@ -205,6 +239,8 @@ export default function GestionarConsultaForm({
           diagnostico: formData.diagnostico,
           tratamiento: formData.tratamiento,
           observaciones: formData.observaciones,
+          insumos: insumosSeleccionados.filter((i) => i.cantidad > 0),
+          servicios: serviciosSeleccionados.filter((s) => s.cantidad > 0),
         }),
       });
 
@@ -251,10 +287,31 @@ export default function GestionarConsultaForm({
         const consultaData = await consultaRes.json();
         if (consultaRes.ok) {
           setConsulta(consultaData.consulta);
+
+          // Actualizar los estados con los insumos y servicios guardados
+          if (consultaData.consulta.Consulta_Insumo) {
+            const insumosExistentes = consultaData.consulta.Consulta_Insumo.map(
+              (ci: any) => ({
+                id_insumo: ci.id_insumo,
+                cantidad: ci.cantidad,
+              })
+            );
+            setInsumosSeleccionados(insumosExistentes);
+          } else {
+            setInsumosSeleccionados([]);
+          }
+
+          if (consultaData.consulta.Consulta_Servicio) {
+            const serviciosExistentes =
+              consultaData.consulta.Consulta_Servicio.map((cs: any) => ({
+                id_servicio: cs.id_servicio,
+                cantidad: cs.cantidad || 1,
+              }));
+            setServiciosSeleccionados(serviciosExistentes);
+          } else {
+            setServiciosSeleccionados([]);
+          }
         }
-        // Limpiar selecciones
-        setInsumosSeleccionados([]);
-        setServiciosSeleccionados([]);
         router.refresh();
       } else {
         setError(data.error || "Error al guardar cambios");
@@ -328,7 +385,7 @@ export default function GestionarConsultaForm({
   };
 
   const totalPagado =
-    consulta?.pagos.reduce((sum, p) => sum + Number(p.monto), 0) || 0;
+    consulta?.pagos?.reduce((sum, p) => sum + Number(p.monto), 0) || 0;
 
   const agregarInsumo = (id_insumo: number) => {
     if (!insumosSeleccionados.find((i) => i.id_insumo === id_insumo)) {
@@ -410,18 +467,20 @@ export default function GestionarConsultaForm({
     );
   }
 
-  if (!consulta.mascota || !consulta.mascota.Relacion_Dueno_Mascota) {
+  if (!consulta.mascota) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600">Datos de consulta incompletos</p>
+        <p className="text-red-600">Error: Mascota no encontrada</p>
         <p className="text-sm text-gray-600 mt-2">
-          Por favor, contacta al administrador
+          Esta consulta no tiene una mascota asociada. Por favor, contacta al
+          administrador.
         </p>
       </div>
     );
   }
 
-  const dueno = consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
+  // Obtener dueño (puede ser undefined si la mascota no tiene dueño registrado)
+  const dueno = consulta.mascota.Relacion_Dueno_Mascota?.[0]?.Dueno;
   const puedeEditar =
     consulta.estado === "programada" || consulta.estado === "en_proceso";
   const esConsultaFinalizada =
@@ -456,14 +515,22 @@ export default function GestionarConsultaForm({
 
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="font-bold text-gray-900 mb-2">👤 Dueño</h3>
-          <p className="text-lg font-semibold text-gray-800">
-            {dueno?.nombre_completo}
-          </p>
-          {dueno?.telefono && (
-            <p className="text-sm text-gray-600">📞 {dueno.telefono}</p>
-          )}
-          {dueno?.correo && (
-            <p className="text-sm text-gray-600">✉️ {dueno.correo}</p>
+          {dueno ? (
+            <>
+              <p className="text-lg font-semibold text-gray-800">
+                {dueno.nombre_completo}
+              </p>
+              {dueno.telefono && (
+                <p className="text-sm text-gray-600">📞 {dueno.telefono}</p>
+              )}
+              {dueno.correo && (
+                <p className="text-sm text-gray-600">✉️ {dueno.correo}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-gray-500 italic">
+              No hay dueño registrado para esta mascota
+            </p>
           )}
         </div>
 

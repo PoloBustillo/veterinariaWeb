@@ -182,6 +182,29 @@ export async function PATCH(
       // Agregar insumos si se proporcionan (usar transacción)
       if (insumos && Array.isArray(insumos) && insumos.length > 0) {
         await prisma.$transaction(async (tx) => {
+          // Primero, obtener los insumos actuales de la consulta
+          const insumosActuales = await tx.consulta_Insumo.findMany({
+            where: { id_consulta: idConsulta },
+          });
+
+          // Devolver las cantidades al inventario antes de eliminar
+          for (const insumoActual of insumosActuales) {
+            await tx.insumo.update({
+              where: { id_insumo: insumoActual.id_insumo },
+              data: {
+                cantidad_disponible: {
+                  increment: insumoActual.cantidad,
+                },
+              },
+            });
+          }
+
+          // Eliminar todos los insumos actuales de la consulta
+          await tx.consulta_Insumo.deleteMany({
+            where: { id_consulta: idConsulta },
+          });
+
+          // Ahora agregar los nuevos insumos
           for (const insumo of insumos) {
             const { id_insumo, cantidad } = insumo;
 
@@ -226,6 +249,12 @@ export async function PATCH(
       // Agregar servicios si se proporcionan (usar transacción)
       if (servicios && Array.isArray(servicios) && servicios.length > 0) {
         await prisma.$transaction(async (tx) => {
+          // Eliminar todos los servicios actuales de la consulta
+          await tx.consulta_Servicio.deleteMany({
+            where: { id_consulta: idConsulta },
+          });
+
+          // Ahora agregar los nuevos servicios
           for (const servicio of servicios) {
             const { id_servicio, cantidad = 1 } = servicio;
 
@@ -251,6 +280,96 @@ export async function PATCH(
             });
           }
         });
+      }
+
+      // Si se finaliza la consulta, crear pago automático y registrar en caja si está abierta
+      if (estado === "finalizada") {
+        // Calcular el total de la consulta
+        const consultaConDetalles = await prisma.consulta.findUnique({
+          where: { id_consulta: idConsulta },
+          include: {
+            Consulta_Insumo: {
+              include: {
+                Insumo: true,
+              },
+            },
+            Consulta_Servicio: {
+              include: {
+                Servicio: true,
+              },
+            },
+          },
+        });
+
+        if (consultaConDetalles) {
+          // Calcular total de servicios
+          const totalServicios = consultaConDetalles.Consulta_Servicio.reduce(
+            (sum, cs) => sum + Number(cs.subtotal),
+            0
+          );
+
+          // Calcular total de insumos (usando costo unitario)
+          const totalInsumos = consultaConDetalles.Consulta_Insumo.reduce(
+            (sum, ci) =>
+              sum + (Number(ci.Insumo.costo_unitario) || 0) * ci.cantidad,
+            0
+          );
+
+          const montoTotal = totalServicios + totalInsumos;
+
+          // Solo crear pago si hay monto a cobrar
+          if (montoTotal > 0) {
+            // Verificar si ya existe un pago para esta consulta
+            const pagoExistente = await prisma.pago.findFirst({
+              where: { id_consulta: idConsulta },
+            });
+
+            if (!pagoExistente) {
+              // Crear el pago con estado pendiente
+              const pago = await prisma.pago.create({
+                data: {
+                  id_consulta: idConsulta,
+                  fecha: new Date(),
+                  monto: montoTotal,
+                  metodo: "efectivo", // Por defecto
+                  estado: "pendiente",
+                },
+              });
+
+              // Buscar caja abierta
+              const cajaAbierta = await prisma.caja.findFirst({
+                where: {
+                  fecha_cierre: null,
+                },
+                orderBy: {
+                  fecha_apertura: "desc",
+                },
+              });
+
+              // Si hay caja abierta, crear movimiento y cambiar estado a pagado
+              if (cajaAbierta) {
+                await prisma.$transaction(async (tx) => {
+                  // Crear movimiento en caja
+                  await tx.caja_Movimiento.create({
+                    data: {
+                      id_caja: cajaAbierta.id_caja,
+                      fecha: new Date(),
+                      concepto: `Pago consulta #${idConsulta} - Consulta finalizada`,
+                      monto: montoTotal,
+                      tipo: "Ingreso",
+                    },
+                  });
+
+                  // Actualizar pago a pagado
+                  await tx.pago.update({
+                    where: { id_pago: pago.id_pago },
+                    data: { estado: "pagado" },
+                  });
+                });
+              }
+            }
+          }
+        }
       }
 
       return NextResponse.json({
