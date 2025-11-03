@@ -15,7 +15,7 @@ async function verificarPatricia() {
         nombre_completo: true,
         correo: true,
         rol: true,
-      }
+      },
     });
 
     if (patricia) {

@@ -6,7 +6,10 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user) {
-      return NextResponse.json({ error: "No hay sesión activa" }, { status: 401 });
+      return NextResponse.json(
+        { error: "No hay sesión activa" },
+        { status: 401 }
+      );
     }
 
     return NextResponse.json({
@@ -17,7 +20,7 @@ export async function GET() {
         role: session.user.role,
         isAdmin: session.user.isAdmin,
       },
-      debug: "Esta información es solo para debugging"
+      debug: "Esta información es solo para debugging",
     });
   } catch (error) {
     console.error("Error al obtener sesión:", error);

@@ -14,19 +14,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { id_consulta, monto, metodo } = body;
 
-    // Verificar que exista caja abierta
+    // Buscar caja abierta (puede o no existir)
     const cajaAbierta = await prisma.caja.findFirst({
       where: {
         fecha_cierre: null,
       },
     });
-
-    if (!cajaAbierta) {
-      return NextResponse.json(
-        { error: "No hay caja abierta. Debes abrir una caja primero." },
-        { status: 400 }
-      );
-    }
 
     // Verificar que la consulta exista
     const consulta = await prisma.consulta.findUnique({
@@ -56,7 +49,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Usar transacción para registrar pago y movimiento de caja
+    // Usar transacción para registrar pago y opcionalmente movimiento de caja
     const resultado = await prisma.$transaction(async (tx) => {
       // 1. Registrar pago
       const pago = await tx.pago.create({
@@ -69,21 +62,24 @@ export async function POST(request: Request) {
         },
       });
 
-      // 2. Registrar movimiento en caja
-      const cliente = consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
-      const concepto = `Pago consulta #${id_consulta} - ${
-        cliente?.nombre_completo || "Cliente"
-      }`;
+      // 2. Registrar movimiento en caja SI hay caja abierta
+      let movimiento = null;
+      if (cajaAbierta) {
+        const cliente = consulta.mascota.Relacion_Dueno_Mascota[0]?.Dueno;
+        const concepto = `Pago consulta #${id_consulta} - ${
+          cliente?.nombre_completo || "Cliente"
+        }`;
 
-      const movimiento = await tx.caja_Movimiento.create({
-        data: {
-          id_caja: cajaAbierta.id_caja,
-          fecha: new Date(),
-          concepto,
-          monto,
-          tipo: "Ingreso",
-        },
-      });
+        movimiento = await tx.caja_Movimiento.create({
+          data: {
+            id_caja: cajaAbierta.id_caja,
+            fecha: new Date(),
+            concepto,
+            monto,
+            tipo: "Ingreso",
+          },
+        });
+      }
 
       return { pago, movimiento };
     });
@@ -91,7 +87,10 @@ export async function POST(request: Request) {
     return NextResponse.json({
       pago: resultado.pago,
       movimiento: resultado.movimiento,
-      message: "Pago registrado exitosamente",
+      message: cajaAbierta 
+        ? "Pago registrado y asociado a caja abierta"
+        : "Pago registrado. Será asociado a la caja cuando se abra.",
+      sinCaja: !cajaAbierta,
     });
   } catch (error) {
     console.error("Error al registrar pago:", error);

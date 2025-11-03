@@ -29,9 +29,9 @@ async function getUser(email: string) {
       console.log("🔍 Veterinario encontrado:", {
         email: veterinario.correo,
         rol: veterinario.rol,
-        isAdmin: veterinario.rol === "admin"
+        isAdmin: veterinario.rol === "admin",
       });
-      
+
       return {
         ...veterinario,
         role: "veterinario" as const,
@@ -104,9 +104,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                 console.log("✅ Login exitoso veterinario:", {
                   email: user.correo,
                   rol: user.rol,
-                  isAdmin: user.isAdmin
+                  isAdmin: user.isAdmin,
                 });
-                
+
                 return {
                   id: user.userId.toString(),
                   email: user.correo || "",
