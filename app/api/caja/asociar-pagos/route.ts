@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     // Crear movimientos de caja para cada pago pendiente
     let totalMovimientosCreados = 0;
 
-  await prisma.$transaction(async (tx: any) => {
+    await prisma.$transaction(async (tx: any) => {
       for (const pago of pagosPendientes) {
         // Si es pago de consulta con detalles
         if (pago.id_consulta && pago.Consulta) {

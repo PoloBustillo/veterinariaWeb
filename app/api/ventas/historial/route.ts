@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Agrupar ventas por pago (transacción)
-  const ventasAgrupadas = ventas.reduce((acc: any, venta: any) => {
+    const ventasAgrupadas = ventas.reduce((acc: any, venta: any) => {
       const idPago = venta.id_pago;
       if (!idPago) return acc;
 

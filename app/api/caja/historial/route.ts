@@ -43,15 +43,13 @@ export async function GET(request: Request) {
 
     // Calcular estadísticas para cada caja
     const cajasConEstadisticas = cajas.map((caja: any) => {
-      const totalIngresos = caja.Caja_Movimiento.filter((m: any) => m.tipo === "Ingreso").reduce(
-        (sum: number, m: any) => sum + Number(m.monto),
-        0
-      );
+      const totalIngresos = caja.Caja_Movimiento.filter(
+        (m: any) => m.tipo === "Ingreso"
+      ).reduce((sum: number, m: any) => sum + Number(m.monto), 0);
 
-      const totalEgresos = caja.Caja_Movimiento.filter((m: any) => m.tipo === "Egreso").reduce(
-        (sum: number, m: any) => sum + Number(m.monto),
-        0
-      );
+      const totalEgresos = caja.Caja_Movimiento.filter(
+        (m: any) => m.tipo === "Egreso"
+      ).reduce((sum: number, m: any) => sum + Number(m.monto), 0);
 
       return {
         ...caja,

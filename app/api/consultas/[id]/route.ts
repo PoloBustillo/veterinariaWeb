@@ -181,7 +181,7 @@ export async function PATCH(
 
       // Agregar insumos si se proporcionan (usar transacción)
       if (insumos && Array.isArray(insumos) && insumos.length > 0) {
-  await prisma.$transaction(async (tx: any) => {
+        await prisma.$transaction(async (tx: any) => {
           // Primero, obtener los insumos actuales de la consulta
           const insumosActuales = await tx.consulta_Insumo.findMany({
             where: { id_consulta: idConsulta },
@@ -248,7 +248,7 @@ export async function PATCH(
 
       // Agregar servicios si se proporcionan (usar transacción)
       if (servicios && Array.isArray(servicios) && servicios.length > 0) {
-  await prisma.$transaction(async (tx: any) => {
+        await prisma.$transaction(async (tx: any) => {
           // Eliminar todos los servicios actuales de la consulta
           await tx.consulta_Servicio.deleteMany({
             where: { id_consulta: idConsulta },

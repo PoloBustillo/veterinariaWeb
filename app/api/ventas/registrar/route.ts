@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Usar transacción para garantizar atomicidad
-  const resultado = await prisma.$transaction(async (tx: any) => {
+    const resultado = await prisma.$transaction(async (tx: any) => {
       // 1. Validar stock y obtener datos de productos
       const productosValidados = [];
       let montoTotal = 0;

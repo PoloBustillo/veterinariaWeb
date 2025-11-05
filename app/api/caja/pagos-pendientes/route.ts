@@ -58,7 +58,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       pagosPendientes: pagosPendientes,
       total: pagosPendientes.length,
-  totalMonto: pagosPendientes.reduce((sum: number, p: any) => sum + Number(p.monto), 0),
+      totalMonto: pagosPendientes.reduce(
+        (sum: number, p: any) => sum + Number(p.monto),
+        0
+      ),
     });
   } catch (error) {
     console.error("Error al obtener pagos pendientes:", error);
