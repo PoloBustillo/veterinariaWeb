@@ -48,7 +48,7 @@ export default async function MisMascotasPage() {
       },
     });
 
-    mascotas = relacionesMascotas.map((relacion) => ({
+  mascotas = relacionesMascotas.map((relacion: any) => ({
       ...relacion.Mascota,
       Relacion_Dueno_Mascota: [relacion],
     }));

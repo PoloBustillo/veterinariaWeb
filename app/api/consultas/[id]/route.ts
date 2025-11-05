@@ -181,7 +181,7 @@ export async function PATCH(
 
       // Agregar insumos si se proporcionan (usar transacción)
       if (insumos && Array.isArray(insumos) && insumos.length > 0) {
-        await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: any) => {
           // Primero, obtener los insumos actuales de la consulta
           const insumosActuales = await tx.consulta_Insumo.findMany({
             where: { id_consulta: idConsulta },
@@ -248,7 +248,7 @@ export async function PATCH(
 
       // Agregar servicios si se proporcionan (usar transacción)
       if (servicios && Array.isArray(servicios) && servicios.length > 0) {
-        await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: any) => {
           // Eliminar todos los servicios actuales de la consulta
           await tx.consulta_Servicio.deleteMany({
             where: { id_consulta: idConsulta },
@@ -304,13 +304,13 @@ export async function PATCH(
         if (consultaConDetalles) {
           // Calcular total de servicios
           const totalServicios = consultaConDetalles.Consulta_Servicio.reduce(
-            (sum, cs) => sum + Number(cs.subtotal),
+            (sum: number, cs: any) => sum + Number(cs.subtotal),
             0
           );
 
           // Calcular total de insumos (usando costo unitario)
           const totalInsumos = consultaConDetalles.Consulta_Insumo.reduce(
-            (sum, ci) =>
+            (sum: number, ci: any) =>
               sum + (Number(ci.Insumo.costo_unitario) || 0) * ci.cantidad,
             0
           );
@@ -348,7 +348,7 @@ export async function PATCH(
 
               // Si hay caja abierta, crear movimientos detallados y cambiar estado a pagado
               if (cajaAbierta) {
-                await prisma.$transaction(async (tx) => {
+                await prisma.$transaction(async (tx: any) => {
                   // Crear un movimiento por cada servicio
                   for (const cs of consultaConDetalles.Consulta_Servicio) {
                     await tx.caja_Movimiento.create({

@@ -20,7 +20,7 @@ export default async function MisCitasPage() {
     select: { id_mascota: true },
   });
 
-  const idsMascotas = relacionesMascotas.map((rel) => rel.id_mascota);
+  const idsMascotas = relacionesMascotas.map((rel: any) => rel.id_mascota);
 
   // Obtener las consultas de las mascotas del dueño
   const consultas = await prisma.consulta.findMany({
@@ -123,7 +123,7 @@ export default async function MisCitasPage() {
           </div>
         ) : (
           <div className="grid gap-6">
-            {consultas.map((consulta) => (
+            {consultas.map((consulta: any) => (
               <Link
                 key={consulta.id_consulta}
                 href={`/mis-citas/${consulta.id_consulta}`}

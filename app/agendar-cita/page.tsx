@@ -38,7 +38,7 @@ export default async function AgendarCitaPage() {
   });
 
   // Transformar datos para el formulario (solo mascotas del usuario)
-  const mascotasConDueno = relacionesMascotas.map((relacion) => {
+  const mascotasConDueno = relacionesMascotas.map((relacion: any) => {
     return {
       id_mascota: relacion.Mascota.id_mascota,
       nombre: relacion.Mascota.nombre,

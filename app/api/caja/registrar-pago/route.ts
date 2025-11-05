@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const cliente = consulta.Mascota.Relacion_Dueno_Mascota[0]?.Dueno;
 
     // Usar transacción para registrar pago y opcionalmente movimiento de caja
-    const resultado = await prisma.$transaction(async (tx) => {
+  const resultado = await prisma.$transaction(async (tx: any) => {
       // 1. Registrar pago (asociar id_caja si hay caja abierta)
       const pago = await tx.pago.create({
         data: {

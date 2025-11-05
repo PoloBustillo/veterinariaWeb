@@ -156,7 +156,7 @@ export async function GET(request: Request) {
         },
       });
 
-      mascotas = relacionesMascotas.map((relacion) => ({
+  mascotas = relacionesMascotas.map((relacion: any) => ({
         ...relacion.Mascota,
         Relacion_Dueno_Mascota: [relacion],
       }));

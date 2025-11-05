@@ -80,7 +80,7 @@ export default async function ConsultasVeterinarioPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {consultas.map((consulta) => {
+                {consultas.map((consulta: any) => {
                   const dueno =
                     consulta.Mascota.Relacion_Dueno_Mascota[0]?.Dueno;
                   return (

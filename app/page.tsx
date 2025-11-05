@@ -421,7 +421,7 @@ export default async function Home() {
 
           {veterinarios.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {veterinarios.map((vet) => (
+              {veterinarios.map((vet: any) => (
                 <div
                   key={vet.id_veterinario}
                   className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition border border-blue-100"
