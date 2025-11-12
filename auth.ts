@@ -49,6 +49,7 @@ async function getUser(email: string) {
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
+  trustHost: true, // Importante para producción detrás de proxy
   providers: [
     Credentials({
       async authorize(credentials) {

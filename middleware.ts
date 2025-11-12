@@ -14,12 +14,25 @@ export default auth(async (req) => {
     secret: process.env.AUTH_SECRET,
   });
 
+  console.log("🔍 Middleware - Path:", pathname, {
+    hasToken: !!token,
+    tokenRole: token?.role,
+    isAdmin: token?.isAdmin,
+    authSecret: process.env.AUTH_SECRET ? "✅ Set" : "❌ Missing",
+  });
+
   // Rutas de veterinario requieren rol de veterinario
   if (pathname.startsWith("/veterinario")) {
     if (!token) {
+      console.log("❌ Middleware - No token, redirecting to login");
       return NextResponse.redirect(new URL("/login", req.url));
     }
     if (token.role !== "veterinario") {
+      console.log(
+        "❌ Middleware - Not veterinario role:",
+        token.role,
+        "redirecting to home"
+      );
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
