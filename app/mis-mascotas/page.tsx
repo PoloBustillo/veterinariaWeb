@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { prisma } from "@/lib/prisma";
 import InternalNav from "@/app/components/InternalNav";
+import MascotasList from "./MascotasList";
 
 export default async function MisMascotasPage() {
   const session = await auth();
@@ -123,88 +124,10 @@ export default async function MisMascotasPage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mascotas.map((mascota: any) => {
-                const dueno = mascota.Relacion_Dueno_Mascota?.[0]?.Dueno;
-                return (
-                  <div
-                    key={mascota.id_mascota}
-                    className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition"
-                  >
-                    {/* Header con emoji de mascota */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="text-4xl">
-                          {mascota.especie === "Perro"
-                            ? "🐕"
-                            : mascota.especie === "Gato"
-                            ? "🐈"
-                            : mascota.especie === "Ave"
-                            ? "🦜"
-                            : mascota.especie === "Conejo"
-                            ? "🐰"
-                            : "🐾"}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-900">
-                            {mascota.nombre}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {mascota.especie}
-                            {mascota.raza && ` • ${mascota.raza}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Información de la mascota */}
-                    <div className="space-y-2 mb-4">
-                      {mascota.sexo && (
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Sexo:</span>{" "}
-                          {mascota.sexo}
-                        </p>
-                      )}
-                      {mascota.fecha_nacimiento && (
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Nacimiento:</span>{" "}
-                          {formatFecha(mascota.fecha_nacimiento)}
-                        </p>
-                      )}
-                      {mascota.color && (
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Color:</span>{" "}
-                          {mascota.color}
-                        </p>
-                      )}
-                      {mascota.senias_particulares && (
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Señas:</span>{" "}
-                          {mascota.senias_particulares}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Información del dueño (solo para veterinarios) */}
-                    {isVeterinario && dueno && (
-                      <div className="border-t border-gray-200 pt-4 mt-4">
-                        <p className="text-xs text-gray-500 font-medium mb-1">
-                          DUEÑO
-                        </p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {dueno.nombre_completo}
-                        </p>
-                        {dueno.telefono && (
-                          <p className="text-sm text-gray-600">
-                            📞 {dueno.telefono}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <MascotasList
+              initialMascotas={mascotas}
+              isVeterinario={isVeterinario}
+            />
           )}
         </div>
       </div>

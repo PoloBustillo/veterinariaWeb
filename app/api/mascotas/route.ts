@@ -171,3 +171,202 @@ export async function GET(request: Request) {
     );
   }
 }
+
+// DELETE: Eliminar una mascota
+export async function DELETE(request: Request) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const idMascota = searchParams.get("id_mascota");
+
+    if (!idMascota) {
+      return NextResponse.json(
+        { error: "ID de mascota requerido" },
+        { status: 400 }
+      );
+    }
+
+    const mascotaId = parseInt(idMascota);
+
+    // Verificar que la mascota existe y el usuario tiene permiso
+    const mascota = await prisma.mascota.findUnique({
+      where: { id_mascota: mascotaId },
+      include: {
+        Relacion_Dueno_Mascota: true,
+      },
+    });
+
+    if (!mascota) {
+      return NextResponse.json(
+        { error: "Mascota no encontrada" },
+        { status: 404 }
+      );
+    }
+
+    // Verificar permisos: veterinarios pueden eliminar cualquiera, clientes solo sus mascotas
+    if (session.user.role !== "veterinario") {
+      const esDueno = mascota.Relacion_Dueno_Mascota.some(
+        (relacion: any) => relacion.id_dueno === parseInt(session.user.id!)
+      );
+
+      if (!esDueno) {
+        return NextResponse.json(
+          { error: "No tienes permiso para eliminar esta mascota" },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Verificar si tiene consultas asociadas
+    const consultasCount = await prisma.consulta.count({
+      where: { id_mascota: mascotaId },
+    });
+
+    if (consultasCount > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "No se puede eliminar la mascota porque tiene consultas registradas",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Eliminar relaciones dueño-mascota primero
+    await prisma.relacion_Dueno_Mascota.deleteMany({
+      where: { id_mascota: mascotaId },
+    });
+
+    // Eliminar la mascota
+    await prisma.mascota.delete({
+      where: { id_mascota: mascotaId },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Mascota eliminada exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar mascota:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
+    return NextResponse.json(
+      {
+        error: "Error al eliminar la mascota",
+        details: errorMessage,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT: Actualizar una mascota
+export async function PUT(request: Request) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const {
+      id_mascota,
+      nombre,
+      especie,
+      raza,
+      fecha_nacimiento,
+      sexo,
+      color,
+      senias_particulares,
+    } = body;
+
+    // Validaciones básicas
+    if (!id_mascota) {
+      return NextResponse.json(
+        { error: "ID de mascota requerido" },
+        { status: 400 }
+      );
+    }
+
+    if (!nombre || !especie) {
+      return NextResponse.json(
+        { error: "Nombre y especie son requeridos" },
+        { status: 400 }
+      );
+    }
+
+    const mascotaId = parseInt(id_mascota);
+
+    // Verificar que la mascota existe y el usuario tiene permiso
+    const mascotaExistente = await prisma.mascota.findUnique({
+      where: { id_mascota: mascotaId },
+      include: {
+        Relacion_Dueno_Mascota: true,
+      },
+    });
+
+    if (!mascotaExistente) {
+      return NextResponse.json(
+        { error: "Mascota no encontrada" },
+        { status: 404 }
+      );
+    }
+
+    // Verificar permisos: veterinarios pueden editar cualquiera, clientes solo sus mascotas
+    if (session.user.role !== "veterinario") {
+      const esDueno = mascotaExistente.Relacion_Dueno_Mascota.some(
+        (relacion: any) => relacion.id_dueno === parseInt(session.user.id!)
+      );
+
+      if (!esDueno) {
+        return NextResponse.json(
+          { error: "No tienes permiso para editar esta mascota" },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Actualizar la mascota
+    const mascotaActualizada = await prisma.mascota.update({
+      where: { id_mascota: mascotaId },
+      data: {
+        nombre,
+        especie,
+        raza: raza || null,
+        fecha_nacimiento: fecha_nacimiento ? new Date(fecha_nacimiento) : null,
+        sexo: sexo || null,
+        color: color || null,
+        senias_particulares: senias_particulares || null,
+      },
+      include: {
+        Relacion_Dueno_Mascota: {
+          include: {
+            Dueno: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      mascota: mascotaActualizada,
+    });
+  } catch (error) {
+    console.error("Error al actualizar mascota:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
+    return NextResponse.json(
+      {
+        error: "Error al actualizar la mascota",
+        details: errorMessage,
+      },
+      { status: 500 }
+    );
+  }
+}

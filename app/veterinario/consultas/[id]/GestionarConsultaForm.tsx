@@ -125,30 +125,40 @@ export default function GestionarConsultaForm({
         const consultaData = await consultaRes.json();
 
         if (consultaRes.ok) {
+          // Normalizar keys que pueden venir en PascalCase desde el API
+          const normalizeConsulta = (raw: any) => {
+            if (!raw) return raw;
+            const normalized = { ...raw };
+            if (raw.Mascota && !raw.mascota) normalized.mascota = raw.Mascota;
+            if (raw.Veterinario && !raw.veterinario)
+              normalized.veterinario = raw.Veterinario;
+            if (raw.Pago && !raw.pagos) normalized.pagos = raw.Pago;
+            return normalized;
+          };
+
+          const consultaNorm = normalizeConsulta(consultaData.consulta);
+
           // Log para debug - verificar estructura de datos
           console.log("📋 Consulta cargada:", {
-            id: consultaData.consulta.id_consulta,
-            tiene_mascota: !!consultaData.consulta.mascota,
-            tiene_relaciones:
-              !!consultaData.consulta.mascota?.Relacion_Dueno_Mascota,
+            id: consultaNorm.id_consulta,
+            tiene_mascota: !!consultaNorm.mascota,
+            tiene_relaciones: !!consultaNorm.mascota?.Relacion_Dueno_Mascota,
             num_relaciones:
-              consultaData.consulta.mascota?.Relacion_Dueno_Mascota?.length ||
-              0,
+              consultaNorm.mascota?.Relacion_Dueno_Mascota?.length || 0,
             tiene_dueno:
-              !!consultaData.consulta.mascota?.Relacion_Dueno_Mascota?.[0]
-                ?.Dueno,
+              !!consultaNorm.mascota?.Relacion_Dueno_Mascota?.[0]?.Dueno,
           });
 
-          setConsulta(consultaData.consulta);
+          setConsulta(consultaNorm);
           setFormData({
-            diagnostico: consultaData.consulta.diagnostico || "",
-            tratamiento: consultaData.consulta.tratamiento || "",
-            observaciones: consultaData.consulta.observaciones || "",
+            diagnostico: consultaNorm.diagnostico || "",
+            tratamiento: consultaNorm.tratamiento || "",
+            observaciones: consultaNorm.observaciones || "",
           });
 
           // Cargar insumos y servicios ya asociados a la consulta
-          if (consultaData.consulta.Consulta_Insumo) {
-            const insumosExistentes = consultaData.consulta.Consulta_Insumo.map(
+          if (consultaNorm.Consulta_Insumo) {
+            const insumosExistentes = consultaNorm.Consulta_Insumo.map(
               (ci: any) => ({
                 id_insumo: ci.id_insumo,
                 cantidad: ci.cantidad,
@@ -157,12 +167,13 @@ export default function GestionarConsultaForm({
             setInsumosSeleccionados(insumosExistentes);
           }
 
-          if (consultaData.consulta.Consulta_Servicio) {
-            const serviciosExistentes =
-              consultaData.consulta.Consulta_Servicio.map((cs: any) => ({
+          if (consultaNorm.Consulta_Servicio) {
+            const serviciosExistentes = consultaNorm.Consulta_Servicio.map(
+              (cs: any) => ({
                 id_servicio: cs.id_servicio,
                 cantidad: cs.cantidad || 1,
-              }));
+              })
+            );
             setServiciosSeleccionados(serviciosExistentes);
           }
         } else {
