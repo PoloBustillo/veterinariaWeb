@@ -13,25 +13,8 @@ import {
 export default async function DashboardVeterinarioPage() {
   const session = await auth();
 
-  console.log("🔍 Dashboard - Session:", {
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    userId: session?.user?.id,
-    userRole: session?.user?.role,
-    isAdmin: session?.user?.isAdmin,
-  });
-
-  // Verificar que el usuario esté autenticado y sea veterinario o admin
-  if (!session?.user?.id) {
-    console.log("❌ Dashboard - No session user ID, redirecting to login");
-    redirect("/login");
-  }
-
-  if (session.user.role !== "veterinario") {
-    console.log(
-      "❌ Dashboard - User is not veterinario, role:",
-      session.user.role
-    );
+  // Verificar que el usuario esté autenticado y sea veterinario
+  if (!session?.user?.id || session.user.role !== "veterinario") {
     redirect("/login");
   }
 

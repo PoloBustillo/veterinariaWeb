@@ -26,12 +26,6 @@ async function getUser(email: string) {
     });
 
     if (veterinario) {
-      console.log("🔍 Veterinario encontrado:", {
-        email: veterinario.correo,
-        rol: veterinario.rol,
-        isAdmin: veterinario.rol === "admin",
-      });
-
       return {
         ...veterinario,
         role: "veterinario" as const,
@@ -49,7 +43,7 @@ async function getUser(email: string) {
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
-  trustHost: true, // Importante para producción detrás de proxy
+  trustHost: true,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -102,12 +96,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
               );
 
               if (passwordMatch) {
-                console.log("✅ Login exitoso veterinario:", {
-                  email: user.correo,
-                  rol: user.rol,
-                  isAdmin: user.isAdmin,
-                });
-
                 return {
                   id: user.userId.toString(),
                   email: user.correo || "",
