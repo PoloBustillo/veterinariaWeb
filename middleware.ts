@@ -8,8 +8,15 @@ export default auth((req) => {
   const token = req.auth;
 
   // Solo log en desarrollo
-  if (process.env.NODE_ENV === 'development') {
-    console.log("🔍 Middleware:", pathname, "Token:", !!token, "Role:", token?.user?.role);
+  if (process.env.NODE_ENV === "development") {
+    console.log(
+      "🔍 Middleware:",
+      pathname,
+      "Token:",
+      !!token,
+      "Role:",
+      token?.user?.role
+    );
   }
 
   return undefined; // Dejar que authConfig.callbacks.authorized maneje la lógica
